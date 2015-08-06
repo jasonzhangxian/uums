@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Entry extends CI_Controller {
+class Entry extends Api_Controller {
 
 	/**
 	 * Index Page for this controller.
