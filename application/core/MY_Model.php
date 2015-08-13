@@ -133,15 +133,30 @@ class MY_Model extends CI_Model {
         return $this->db->replace($this->_table_name, $data);
     }
 
+    /*
+     * 获取刚刚执行的SQL语句
+     * 
+     * @access   public
+     * @return   string   SQL语句
+     */
+
 	public function last_query()
 	{
 		return $this->db->last_query();
 	}
 
+    /*
+     * 判断表格是否存在
+     * 
+     * @access   public
+     * @return   bool
+     */
+
 	public function table_exists($table)
 	{
 		return $this->db->table_exists($table);
 	}
+    
 }
 
 /* End of file MY_Model.php */

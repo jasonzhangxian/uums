@@ -4,33 +4,73 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 /**
- * 加载全局文件 css，jquery，js
- * 
- * @access   public
- * @return   string   html 代码字符串
- */
-function load_common() {
-    $load = '';
-    $load .= '<link type="text/css" rel="stylesheet" href="' . SITE_COMMON_STATIC . '/common.css" />' . "\n";
-    $load .= '<link type="text/css" rel="stylesheet" href="' . SITE_RESOURCES . '/jquery-ui.css" />' . "\n";
-    $load .= '<script type="text/javascript" src="' . SITE_RESOURCES . '/jquery.js"></script>' . "\n";
-    $load .= '<script type="text/javascript" src="' . SITE_RESOURCES . '/jquery-ui.js"></script>' . "\n";
-    $load .= '<script type="text/javascript" src="' . SITE_COMMON_STATIC . '/common.js"></script>' . "\n";
-    return $load;
-}
-
-/**
- * 打印数据
+ * 打印数据 用于调试代码
  * 
  * @access   public
  * @param    array     数据数组
  * @die      boolean   是否终止执行
  */
-function print_d($datas, $die = TRUE) {
+function print_d($datas, $die = TRUE) 
+{
     echo '<pre>';
     print_r($datas);
     echo '</pre>';
     $die ? die() : '';
+}
+
+/**
+ * 获取IP地址
+ * 
+ * @access   public
+ * @return   string   IP地址
+ */
+function get_ip() 
+{
+    $ip = '';
+    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    else if(isset($_SERVER['HTTP_CLIENT_IP']))
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    else
+        $ip = $_SERVER['REMOTE_ADDR'];
+    return $ip;
+}
+
+
+/**
+ * 解析xml
+ *
+ * @access   public
+ * @param    string     xml字符串
+ * @return   array   结果数组
+ */
+function get_xml_data ($strXml) 
+{
+    $pos = strpos($strXml, 'xml');
+    if ($pos) {
+        $xmlCode=simplexml_load_string($strXml,'SimpleXMLElement');
+        $arrayCode=get_object_vars_final($xmlCode);
+        return $arrayCode ;
+    } else {
+        return '';
+    }
+}
+
+function get_object_vars_final($obj)
+{
+    if(is_object($obj)){
+        $obj=get_object_vars($obj);
+    }
+    if(is_array($obj)){
+        if(empty($obj))
+            $obj = '';
+        else{
+            foreach ($obj as $key=>$value){
+                $obj[$key]=get_object_vars_final($value);
+            }
+        }
+    }
+    return $obj;
 }
 
 /*

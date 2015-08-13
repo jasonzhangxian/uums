@@ -22,6 +22,7 @@ class MY_Controller extends CI_Controller {
 class Api_Controller extends MY_Controller {
     function __construct() {
         parent::__construct();
+        //此处要做哪些方面的验证
     }
 
 }
