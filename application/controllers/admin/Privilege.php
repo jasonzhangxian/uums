@@ -36,7 +36,9 @@ class Privilege extends REST_Controller {
 				$search = $this->get('search');
 				$where = array();
 				$records = array();
-
+				if(!empty($search)){
+					$where['like'] = array('privilege_name'=>$search,'privilege_code'=>$search);
+				}
 				$privilege = $this->privilege->get_all($where,'*','privilege_id','desc', $limit,$start);
 				$total = $this->privilege->get_count($where);
 				if ($privilege !== NULL)
@@ -231,6 +233,50 @@ class Privilege extends REST_Controller {
 		}
 		$total = $this->privilege->get_count($where);
 		$result = array(EXT_JSON_READER_TOTAL => $total, EXT_JSON_READER_ROOT => $records);
+		return $result;
+	}
+	private function privilege_folder()
+	{
+		$privilege_id = $this->get('privilege_id');
+		$sys_code = $this->get('sys_code');
+		$where = array();
+		if(is_numeric($privilege_id))
+		{
+			$where = array('parent_id'=>$privilege_id);
+		}else
+		{
+			$where = !empty($privilege_id)?array('sys_code'=>$privilege_id):array();
+		}
+		if(!empty($sys_code))
+			$where['sys_code'] = $sys_code;
+		$records = $this->privilege->get_all($where,'*','sort_order','asc');
+		if(!empty($records))
+		{
+			$result = array();
+			$len = count($records);
+			$my_parent_key = array(0);
+			for($i=0;$i<=$len;$i++)
+			{
+				$j = 1;
+				foreach($records as $key=>&$value)
+				{
+					$value['margin'] = $value['level']*10;
+					if($value['level'] == $i)
+					{
+						$k= str_pad(pow(10,($i+1))+$j+$my_parent_key[$value['parent_id']],$len,'0');
+						if($i>=0)
+							$my_parent_key[$value['privilege_id']] = $k;
+						//echo $j."_".$value['parent_id']."_".$i."_".$k."";
+						$result[$k] = $value;
+						unset($records[$key]);
+						$j++;
+					}
+				}
+			}
+		}
+		ksort($result);
+		//print_r($result);
+		$result = array(EXT_JSON_READER_ROOT => array_values($result));
 		return $result;
 	}
 	private function privilege_move()

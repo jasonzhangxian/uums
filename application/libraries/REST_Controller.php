@@ -374,8 +374,6 @@ abstract class REST_Controller extends Admin_Controller {
     {
         parent::__construct();
 
-		$this->configuration->extract_all();
-
         // Disable XML Entity (security vulnerability)
         libxml_disable_entity_loader(TRUE);
 

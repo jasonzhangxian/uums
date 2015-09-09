@@ -24,7 +24,6 @@ Ext.define('Uums.privilege.GeneralPanel', {
         'system_name',
         'margin'
       ],
-      pageSize: Uums.CONF.GRID_PAGE_SIZE,
       proxy: {
         type: 'ajax',
         url : '{{ site_url('admin/new7_system/new7_system') }}',
@@ -61,11 +60,10 @@ Ext.define('Uums.privilege.GeneralPanel', {
         'privilege_name',
         'margin'
       ],
-      pageSize: Uums.CONF.GRID_PAGE_SIZE,
       proxy: {
         type: 'ajax',
         url : Uums.privilege.request_url,
-		extraParams : {action:'list'},
+        extraParams : {action:'folder'},
         reader: {
           type: 'json',
           root: Uums.CONF.JSON_READER_ROOT,

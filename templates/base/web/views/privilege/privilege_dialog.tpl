@@ -46,7 +46,7 @@ Ext.define('Uums.privilege.PrivilegeDialog', {
        
       this.frmPrivilege.load({
         url: Uums.privilege.request_url,
-		method: 'GET',
+        method: 'GET',
         success: function (form, action) {
           // get the parent id of the loading privilege.
           var sys_code = action.result.data.sys_code;
@@ -57,7 +57,8 @@ Ext.define('Uums.privilege.PrivilegeDialog', {
           //this.pnlGeneral.status.setValue(status);
           this.pnlGeneral.dsSysPrivilege.on('load', function() {
             this.pnlGeneral.cboSysPrivilege.setValue(sys_code);
-			this.pnlGeneral.dsParentPrivilege.load();
+            this.pnlGeneral.dsParentPrivilege.proxy.extraParams['sys_code'] = sys_code;
+            this.pnlGeneral.dsParentPrivilege.load();
           }, this);
           this.pnlGeneral.dsSysPrivilege.load();
           this.pnlGeneral.dsParentPrivilege.on('load', function() {
@@ -76,7 +77,7 @@ Ext.define('Uums.privilege.PrivilegeDialog', {
     } else {
       this.pnlGeneral.dsSysPrivilege.load();
       
-	  this.pnlGeneral.cboParentPrivilege.disable();
+      this.pnlGeneral.cboParentPrivilege.disable();
 
       Uums.privilege.PrivilegeDialog.superclass.show.call(this);
     }

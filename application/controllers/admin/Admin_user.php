@@ -108,11 +108,7 @@ class Admin_user extends REST_Controller {
         }else{
         	$username_rule = 'trim|required|min_length[4]|is_unique[admin_user.username]';
         }
-        $this->form_validation->set_rules('username', '用户账号', $username_rule,array(
-			        'required'  => '%s不能为空.',
-			        'min_length' => '%s长度必须大于3位',
-			        'is_unique' => '您输入的%s系统中已存在.'
-			        ));
+        $this->form_validation->set_rules('username', '用户账号', $username_rule, $username_error_message);
         $this->form_validation->set_rules('realname', '真实姓名', 'trim|required',array('required'  => '%s不能为空.'));
         $this->form_validation->set_rules('mobile', '手机号', 'trim|required',array('required'  => '%s不能为空.'));
         $this->form_validation->set_rules('email', '邮箱', 'trim|valid_email',array('valid_email'  => '请输入正确的%s.'));
