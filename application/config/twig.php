@@ -3,7 +3,7 @@
 $config['extension'] = ".tpl";
 
 // 默认模版路劲
-$config['template_dir'] = APPPATH . "views/";
+$config['template_dir'] = FCPATH . "templates/base/web/views/";
 
 // 缓存目录
 $config['cache_dir'] = APPPATH . "cache/twig/";

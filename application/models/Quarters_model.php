@@ -12,7 +12,6 @@ class Quarters_model extends MY_Model {
         parent::__construct($this->_table_name);
     }
 
-    
 }
 
 /* End of file access.php */

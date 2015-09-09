@@ -84,3 +84,11 @@ define('EXIT_USER_INPUT', 7); // invalid user input
 define('EXIT_DATABASE', 8); // database error
 define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+
+
+
+define('EXT_JSON_READER_ROOT', 'records');
+define('EXT_JSON_READER_TOTAL', 'total');
+define('EXT_GRID_STEPS', 5);
+define('MAX_DISPLAY_SEARCH_RESULTS',12);
+

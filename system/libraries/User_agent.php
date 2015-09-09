@@ -77,6 +77,7 @@ class CI_User_agent {
 	 * @var bool
 	 */
 	public $is_mobile = FALSE;
+	var $is_pad     = FALSE;
 
 	/**
 	 * Languages accepted by the current user agent
@@ -112,6 +113,7 @@ class CI_User_agent {
 	 * @var array
 	 */
 	public $mobiles = array();
+	var $pads    	= array();
 
 	/**
 	 * List of robots to compare against current user agent
@@ -147,6 +149,7 @@ class CI_User_agent {
 	 * @var string
 	 */
 	public $mobile = '';
+	var $pad		= '';
 
 	/**
 	 * Current user-agent robot name
@@ -366,6 +369,31 @@ class CI_User_agent {
 
 		return FALSE;
 	}
+	
+	// --------------------------------------------------------------------
+	
+	/**
+	 * Set the Pad Device
+	 *
+	 * @access	private
+	 * @return	bool
+	 */
+	private function _set_pad()
+	{
+		if (is_array($this->pads) AND count($this->pads) > 0)
+		{
+			foreach ($this->pads as $key => $val)
+			{
+				if (FALSE !== (strpos(strtolower($this->agent), $key)))
+				{
+					$this->is_pad = TRUE;
+					$this->pad = $val;
+					return TRUE;
+				}
+			}
+		}
+		return FALSE;
+	}
 
 	// --------------------------------------------------------------------
 
@@ -482,6 +510,59 @@ class CI_User_agent {
 		return (isset($this->mobiles[$key]) && $this->mobile === $this->mobiles[$key]);
 	}
 
+	// --------------------------------------------------------------------
+
+	/**
+	 * Is Pad
+	 *
+	 * @access	public
+	 * @return	bool
+	 */
+	public function is_pad($key = NULL)
+	{
+		if ( ! $this->is_pad)
+		{
+			return FALSE;
+		}
+
+		// No need to be specific, it's a mobile
+		if ($key === NULL)
+		{
+			return TRUE;
+		}
+
+		// Check for a specific robot
+		return array_key_exists($key, $this->pads) AND $this->pad === $this->pads[$key];
+	}
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Get Medium: web, mobile, pad, robot
+	 *
+	 * @access	public
+	 * @return	bool
+	 */
+	public function get_medium()
+	{
+		if ($this->is_mobile)
+		{
+			return 'mobile';
+		} 
+		else if ($this->is_pad)
+		{
+			return 'pad';
+		} 
+		else if ($this->is_robot)
+		{
+			return 'robot';
+		}
+	    else 
+		{
+			return 'web';
+		}
+	}
+	
 	// --------------------------------------------------------------------
 
 	/**

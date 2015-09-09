@@ -51,8 +51,8 @@ class MY_Model extends CI_Model {
 	{
 		$this->db->select($fields);
 		$this->db->from($this->_table_name);
-        if ($where)
-            $this->db->where($where);
+        $this->_construct_where($where);
+
         if (!empty($order))
             $this->db->order_by($sort,$order);
 		if($limit > 0)
@@ -66,9 +66,8 @@ class MY_Model extends CI_Model {
 
     public function get_count($where = array()) 
 	{
-        if ($where) {
-            $this->db->where($where);
-        }
+        $this->_construct_where($where);
+        
         $count = $this->db->count_all_results($this->_table_name);
         return $count;
     }
@@ -157,6 +156,56 @@ class MY_Model extends CI_Model {
 		return $this->db->table_exists($table);
 	}
     
+    /*
+     * 保存数据
+     * 
+     * @access   public
+     * @return   bool
+     */
+    public function save($where,$data)
+	{
+		if(empty($where))
+		{
+			return $this->insert($data);
+		}else
+		{
+			$this->update($data,$where);
+			return TRUE;
+		}
+	}
+    /*
+     * 构造where
+     * 
+     * @access   private
+     */
+    private function _construct_where($where = array())
+    {
+        if($where)
+        {
+            foreach($where as $key=>$value)
+            {
+                if(strpos($key,"in ") !== FALSE)
+                {
+                    $this->db->where_in(str_replace('in ','',$key),$value);
+                    unset($where[$key]);
+                }
+                if($key == "like")
+                {
+                    $i = 0;
+                    foreach($value as $k => $v)
+                    {
+                        $this->db->{$i==0?'like':'or_like'}($k,$v);
+                        $i++;
+                    }
+                    unset($where[$key]);
+                }
+            }
+        }
+        if ($where) {
+            $this->db->where($where);
+        }
+        return;
+    }
 }
 
 /* End of file MY_Model.php */

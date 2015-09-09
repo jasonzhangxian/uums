@@ -71,7 +71,7 @@ class Entry extends Api_Controller {
 	 */
 	private function check_system()
 	{
-		$sys_info = $this->new7_system->get_one(array('system_name'=>$this->_sys_code));
+		$sys_info = $this->new7_system->get_one(array('sys_code'=>$this->_sys_code));
 		if(!$sys_info)
 		{
 			$this->result->set("server-check-error:Invalid sys_code",12)->output();

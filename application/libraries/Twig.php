@@ -39,6 +39,8 @@ class Twig {
         $CI->load->helper(array('url'));
         $this->twig->addFunction(new Twig_SimpleFunction('site_url', 'site_url'));
         $this->twig->addFunction(new Twig_SimpleFunction('base_url', 'base_url'));
+        $this->twig->addFunction(new Twig_SimpleFunction('icon_status_url', 'icon_status_url'));
+        $this->twig->addFunction(new Twig_SimpleFunction('lang', 'lang'));
     }
 
     /**

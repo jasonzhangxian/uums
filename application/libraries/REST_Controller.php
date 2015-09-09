@@ -14,7 +14,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @link            https://github.com/chriskacerguis/codeigniter-restserver
  * @version         3.0.0
  */
-abstract class REST_Controller extends CI_Controller {
+abstract class REST_Controller extends Admin_Controller {
 
     // Note: Only the widely used HTTP status codes are documented
 
@@ -373,6 +373,8 @@ abstract class REST_Controller extends CI_Controller {
     public function __construct($config = 'rest')
     {
         parent::__construct();
+
+		$this->configuration->extract_all();
 
         // Disable XML Entity (security vulnerability)
         libxml_disable_entity_loader(TRUE);

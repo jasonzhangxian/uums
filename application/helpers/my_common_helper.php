@@ -24,16 +24,43 @@ function print_d($datas, $die = TRUE)
  * @access   public
  * @return   string   IP地址
  */
-function get_ip() 
+if (!function_exists('get_ip'))
 {
-    $ip = '';
-    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    else if(isset($_SERVER['HTTP_CLIENT_IP']))
-        $ip = $_SERVER['HTTP_CLIENT_IP'];
-    else
-        $ip = $_SERVER['REMOTE_ADDR'];
-    return $ip;
+    function get_ip()
+    {
+        if (isset($_SERVER))
+        {
+            if (isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+            {
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            }
+            elseif (isset($_SERVER['HTTP_CLIENT_IP']))
+            {
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
+            }
+            else
+            {
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }
+        }
+        else
+        {
+            if (getenv('HTTP_X_FORWARDED_FOR'))
+            {
+                $ip = getenv('HTTP_X_FORWARDED_FOR');
+            }
+            elseif (getenv('HTTP_CLIENT_IP'))
+            {
+                $ip = getenv('HTTP_CLIENT_IP');
+            }
+            else
+            {
+                $ip = getenv('REMOTE_ADDR');
+            }
+        }
+
+        return $ip;
+    }
 }
 
 
@@ -325,6 +352,47 @@ function objectToArray($e) {
             $e[$k] = (array) objectToArray($v);
     }
     return $e;
+}
+
+
+/**
+ * Generate an green status flag for the grid
+ *
+ * @access public
+ * @param string name of the icon
+ * @param string the template
+ * @param string the template type web/mobile
+ * @return string
+ */
+
+if ( ! function_exists('icon_status_url'))
+{
+    function icon_status_url($icon, $template = 'base', $type = 'web')
+    {
+        return base_url('templates/' . $template . '/' . $type . '/images/' . $icon);
+    }
+}
+/**
+ * Fetches a language variable and optionally outputs a form label
+ *
+ * @access	public
+ * @param	string	the language line
+ * @param	string	the id of the form element
+ * @return	string
+ */
+if( ! function_exists('lang'))
+{
+  function lang($key)
+  {
+    $CI =& get_instance();
+    $line = $CI->lang->line($key);
+    
+    if (empty($line)) {
+      return $key;
+    }
+
+    return $line;
+  }
 }
 
 /* End of file my_common_helper.php */

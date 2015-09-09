@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 Class Uums {
 
-	public $gatewayUrl = 'http://localhost/api/Entry';
+	public $gatewayUrl = 'http://uums.local.com/api/Entry';
 
 	public $sys_code = 'uums';
 

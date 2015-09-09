@@ -22,6 +22,7 @@ Class Login {
 		$this->_username = trim($this->_username);
 		$this->_password = trim($this->_password);
 		$this->_sys_code = trim($this->_sys_code);
+		$this->_password = md5($this->CI->encryption->decrypt($this->_password));
 		//验证参数是否符合本API的规则
 		$this->check_params();
 
