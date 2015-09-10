@@ -48,7 +48,8 @@ class Login extends Admin_Controller
      */
     public function index()
     {
-        $this->twig->assign('title','啥啥啥');
+        $username = $this->input->cookie('username');
+        $this->twig->assign('username', $username);
 
 		$this->twig->render('login');
     }
@@ -66,14 +67,14 @@ class Login extends Admin_Controller
 		$this->load->library('encryption');
 		$this->load->library('uums',array('api'=>'login','username'=>$username,'password'=>$this->encryption->encrypt($password)));
 		$response = $this->uums->execute();
-        if (!isset($response->msg))
+        if (!isset($response->msg) && !empty($response->base_info))
         {
 			$customer = $this->admin->login($response);
 			$response = array('success' => TRUE);
         }
         else
         {
-            $response = array('success' => FALSE, 'error' => $response->msg);
+            $response = array('success' => FALSE, 'error' => isset($response->msg)?$response->msg:'登录失败，请联系管理员');
         }
 
         $this->set_output($response);

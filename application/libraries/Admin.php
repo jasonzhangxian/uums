@@ -146,7 +146,7 @@ class Admin
     public function login($user_info)
     {
         //if customer data is not null
-        if ($user_info !== FALSE)
+        if ($user_info !== FALSE && isset($user_info->base_info))
         {
             $this->_data = array();
 
@@ -157,6 +157,7 @@ class Admin
 
             //set data to session
             $this->ci->session->set_userdata('admin_data', $this->_data);
+            $this->ci->input->set_cookie('username', $user_info->base_info->username, 7*24*3600);
         }
         //if user data is not found and session is not empty then reset session
         else if ($this->ci->session->userdata('admin_data') !== NULL)

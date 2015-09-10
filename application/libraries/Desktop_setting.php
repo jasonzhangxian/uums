@@ -231,7 +231,7 @@ class Desktop_Setting
             }
         }
 
-        $modules[] = 'new Uums.desktop.LanguagesGroupWindow()';
+        //$modules[] = 'new Uums.desktop.LanguagesGroupWindow()';
 
 
         $menu = '[' . implode(',' , $modules) . ']';
@@ -391,7 +391,7 @@ class Desktop_Setting
             }
         }
 
-        $output .= $this->get_lang_modules();
+        //$output .= $this->get_lang_modules();
 
         return $output;
     }

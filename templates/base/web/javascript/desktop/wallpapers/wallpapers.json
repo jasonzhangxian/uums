@@ -5,7 +5,7 @@
     "Name": "Blank",
     "Author": "",
     "Url": "",
-    "Thumbnail": "templates/base/web/javascript/desktop/wallpapers/Thumbnails/blank.gif",
+    "Thumbnail": "templates/base/web/javascript/desktop/wallpapers/thumbnails/blank.gif",
     "File": "templates/base/web/javascript/desktop/wallpapers/blank.gif"
   },
   {
@@ -13,7 +13,7 @@
     "Name": "Blue Swirl",
     "Author": "",
     "Url": "",
-    "Thumbnail": "templates/base/web/javascript/desktop/wallpapers/Thumbnails/blue-swirl.jpg",
+    "Thumbnail": "templates/base/web/javascript/desktop/wallpapers/thumbnails/blue-swirl.jpg",
     "File": "templates/base/web/javascript/desktop/wallpapers/blue-swirl.jpg"
   },
   {
@@ -21,7 +21,7 @@
     "Name": "Blue Psychedelic",
     "Author": "",
     "Url": "",
-    "Thumbnail": "templates/base/web/javascript/desktop/wallpapers/Thumbnails/blue-psychedelic.jpg",
+    "Thumbnail": "templates/base/web/javascript/desktop/wallpapers/thumbnails/blue-psychedelic.jpg",
     "File": "templates/base/web/javascript/desktop/wallpapers/blue-psychedelic.jpg"
   },
   {
@@ -29,7 +29,7 @@
     "Name": "desk",
     "Author": "",
     "Url": "",
-    "Thumbnail": "templates/base/web/javascript/desktop/wallpapers/Thumbnails/desk.jpg",
+    "Thumbnail": "templates/base/web/javascript/desktop/wallpapers/thumbnails/desk.jpg",
     "File": "templates/base/web/javascript/desktop/wallpapers/desk.jpg"
   },
   {
@@ -37,7 +37,7 @@
     "Name": "desktop",
     "Author": "",
     "Url": "",
-    "Thumbnail": "templates/base/web/javascript/desktop/wallpapers/Thumbnails/desktop.jpg",
+    "Thumbnail": "templates/base/web/javascript/desktop/wallpapers/thumbnails/desktop.jpg",
     "File": "templates/base/web/javascript/desktop/wallpapers/desktop.jpg"
   }]
 }

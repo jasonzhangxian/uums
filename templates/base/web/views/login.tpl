@@ -39,9 +39,11 @@
         items: [
           txtUserName = new Ext.form.TextField({
             name: 'user_name', 
+            id: 'user_name',
             fieldLabel: '用户名', 
             labelSeparator: ' ', 
             allowBlank:false,
+            value: '{{username}}',
             listeners: {
               specialkey: function(field, e) {
                 if (e.getKey() == e.ENTER) {
@@ -50,8 +52,9 @@
               }
             }
           }),
-          {
+          txtUserPass = new Ext.form.TextField({
             name: 'user_password', 
+            id: 'user_password', 
             fieldLabel: '密码', 
             inputType: 'password', 
             labelSeparator: ' ', 
@@ -63,7 +66,7 @@
                 }
               }
             }
-          }
+          })
         ],
         buttons: [{
           text: '登陆',
@@ -71,7 +74,9 @@
           scope: this
         }],
         listeners : {
-          render: function() {txtUserName.focus(false, true);}
+          render: function() {
+            txtUserName.getValue()!=''?txtUserPass.focus(false, true):txtUserName.focus(false, true);
+          }
         },
         renderTo: 'x-login-form'
       });
@@ -85,12 +90,13 @@
       
       function login() {
         frmlogin.form.submit({
+          waitMsg: "正在尝试登陆...",
           success: function (form, action) {
             window.location = '{{base_url}}admin/index';
           },
           failure: function (form, action) {
             if (action.failureType != 'client') {
-              Ext.Msg.alert('ms_error', action.result.error);
+              Ext.Msg.alert('错误提示', action.result.error);
             }
           },
           scope: this

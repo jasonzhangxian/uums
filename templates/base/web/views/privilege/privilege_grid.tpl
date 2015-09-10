@@ -9,6 +9,13 @@ Ext.define('Uums.privilege.PrivilegeGrid', {
       }else {
         return '<img class="img-button btn-status-on" style="cursor: pointer" src="{{ icon_status_url('icon_status_green_light.gif') }}" />&nbsp;<img class="img-button" src= "{{ icon_status_url('icon_status_red.gif') }}" />';
       }
+    },
+    renderType : function(type) {
+      if(type == 1) {
+        return '菜单';
+      }else {
+        return '按钮';
+      }
     }
   },
   
@@ -54,7 +61,7 @@ Ext.define('Uums.privilege.PrivilegeGrid', {
       { header: '修改时间', dataIndex: 'update_time', sortable: true, width:120},
       { header: '修改人', dataIndex: 'update_user_name', sortable: true, width:60},
       { header: '是否启用', align: 'center', renderer: statics.renderStatus, dataIndex: 'status',width:60},
-      { header: '类型', dataIndex: 'type', sortable: true, width:40},
+      { header: '类型', dataIndex: 'type', renderer: statics.renderType, sortable: true, width:40},
       { header: '排序', dataIndex: 'sort_order', sortable: true, width:40},
       {
         xtype: 'actioncolumn', 

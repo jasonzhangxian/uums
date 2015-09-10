@@ -445,3 +445,8 @@
   background-image: url(../images/icons/48x48/tax_classes.png);
   filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/48x48/tax_classes.png', sizingMethod='scale');
 }
+
+.icon-quarters_to_privilege-shortcut img {
+  background-image: url(../images/icons/48x48/google_sitemap.png);
+  filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/icons/48x48/google_sitemap.png', sizingMethod='scale');
+}
