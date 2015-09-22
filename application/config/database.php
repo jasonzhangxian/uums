@@ -59,13 +59,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | the query builder class.
 */
 
-$active_group = 'mac';
+$active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '192.168.1.10:3336',
-	'username' => 'new7',
+	'hostname' => '192.168.1.9',
+	'username' => 'root',
 	'password' => '123456',
 	'database' => 'uums',
 	'dbdriver' => 'mysqli',

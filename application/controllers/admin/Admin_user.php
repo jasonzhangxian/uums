@@ -136,6 +136,7 @@ class Admin_user extends REST_Controller {
 		        		$this->user_to_quarters->insert(array('user_id'=>$user_id,'quarters_id'=>$quarters_id));
 		        	}
 		        }
+                $this->admin_logs->set('编辑用户：'.$username);
                 $response = array('success' => TRUE, 'feedback' => '成功： 操作成功');
             }
             else
@@ -163,6 +164,7 @@ class Admin_user extends REST_Controller {
 
         if ($this->admin_user->update(array('is_deleted'=>$flag),array('user_id'=>$user_id)))
         {
+            $this->admin_logs->set('修改用户状态：用户ID为'.$user_id."，修改后状态为".$flag);
             $response = array('success' => TRUE, 'feedback' => '成功： 操作成功。');
         }
         else

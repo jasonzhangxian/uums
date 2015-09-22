@@ -60,3 +60,6 @@ $route['translate_uri_dashes'] = TRUE;
 */
 $route['api/Example/users/(:num)'] = 'api/Example/users/id/$1'; // Example 4
 $route['api/Example/users/(:num)(\.)([a-zA-Z0-9_-]+)(.*)'] = 'api/Example/users/id/$1/format/$3$4'; // Example 8
+
+$route['admin'] = 'admin/index';
+$route['admin'.'(/.*)?'] = 'admin$1';
