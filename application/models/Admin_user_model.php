@@ -84,11 +84,12 @@ class Admin_user_model extends MY_Model {
     {
         $modules = array();
         
-        $result = $this->get_one(array('user_id' => $user_id),'module');
-        
+        //$result = $this->get_one(array('user_id' => $user_id),'module');
+        $result = $this->admin->get_modules();
+
         if (count($result) > 0)
         {
-            $modules[]= $result['module'];
+            $modules = $result;
         }
         
         

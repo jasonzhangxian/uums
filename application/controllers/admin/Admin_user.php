@@ -30,11 +30,15 @@ class Admin_user extends REST_Controller {
 			$start = $this->get('start') ? $this->get('start') : 0;
 			$limit = $this->get('limit') ? $this->get('limit') : MAX_DISPLAY_SEARCH_RESULTS;
 			$search = $this->get('search');
+            $department_id = $this->get('department_id');
 			$where = array();
 			$records = array();
 			if(!empty($search)){
 				$where['like'] = array('username'=>$search,'realname'=>$search);
 			}
+            $department_id = intval($department_id);
+            if($department_id)
+                $where['department_id'] = $department_id;
 			$admin_user = $this->admin_user->get_all($where,'*','user_id','desc', $limit,$start);
 			$total = $this->admin_user->get_count($where);
 			if ($admin_user !== NULL)
@@ -51,6 +55,8 @@ class Admin_user extends REST_Controller {
 						'weixin_no' => $q['weixin_no'],
 						'email' => $q['email'],
 						'entry_time' => $q['entry_time'],
+                        'department_id' => $q['department_id'],
+                        'grade_id' => $q['grade_id'],
 						'is_deleted' => $q['is_deleted']
 						);     
 				}
@@ -73,6 +79,8 @@ class Admin_user extends REST_Controller {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         $realname = $this->input->post('realname');
+        $department_id = $this->input->post('department_id');
+        $grade_id = $this->input->post('grade_id');
         $sex = $this->input->post('sex');
         $mobile = $this->input->post('mobile');
         $weixin_no = $this->input->post('weixin_no');
@@ -84,6 +92,8 @@ class Admin_user extends REST_Controller {
 
         $data = array('username' => $username,
 					'realname' => $realname,
+                    'department_id' => $department_id,
+                    'grade_id' => $grade_id,
 					'sex' => intval($sex),
 					'mobile' => $mobile,
 					'weixin_no' => $weixin_no,

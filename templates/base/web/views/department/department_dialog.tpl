@@ -42,7 +42,7 @@ Ext.define('Uums.department.DepartmentDialog', {
     if (departmentId > 0) {
       this.frmDepartment.load({
         url: Uums.department.request_url,
-	method: 'GET',
+        method: 'GET',
         success: function(form, action) {
           Uums.department.DepartmentDialog.superclass.show.call(this);
         },
@@ -60,7 +60,7 @@ Ext.define('Uums.department.DepartmentDialog', {
      
     this.frmDepartment = Ext.create('Ext.form.FormPanel', {
       url: Uums.department.request_url,
-	  method: 'POST',
+      method: 'POST',
       baseParams: {}, 
       border: false,
       bodyPadding: 10,
@@ -70,22 +70,11 @@ Ext.define('Uums.department.DepartmentDialog', {
         anchor: '98%'
       },
       items: [
-        {xtype: 'textfield', fieldLabel: '部门名称', name: 'department_name', allowBlank: false},<!--此处需要改-->
-        {xtype: 'textfield', fieldLabel: '部门水平', name: 'departmnt_level', allowBlank: false},
-        {xtype: 'textfield', fieldLabel: '等级编号', name: 'parent_id', allowBlank: false},
-        /*{
-            layout: 'column',
-            border: false,
-            items:[{
-              id: 'is_closed',
-              border: false,
-              style: "padding-right: 5px;",
-              items:[{fieldLabel: '是否启用', xtype:'radio', id: 'statusEnable', name: 'is_closed', boxLabel: '已启用', inputValue: '0', checked: true}]
-            },{
-              border: false,
-              items: [{fieldLabel: '未启用', boxLabel: '未启用', xtype:'radio', name: 'is_closed', hideLabel: true, inputValue: '1'}]
-            }]
-          }*/
+        {xtype: 'textfield', fieldLabel: '所属上级', name: 'parent_id', allowBlank: false, value: 0},
+        {xtype: 'textfield', fieldLabel: '部门名称', name: 'department_name', allowBlank: false},
+        {xtype: 'numberfield', fieldLabel: '部门水平', name: 'departmnt_level', allowBlank: false, value: 0},
+        {xtype: 'numberfield', fieldLabel: '排序', name: 'order', allowBlank: false, value: 0}
+        
       ]
     });
     

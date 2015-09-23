@@ -8,15 +8,16 @@ Ext.define('Uums.admin_user.mainPanel', {
     config.border = false;
     config.layout = 'border';
     
+    this.treeDepartment = Ext.create('Uums.admin_user.DepartmentTreePanel');
+    this.treeDepartment.on('selectchange', this.onDepartmentSelectChange, this);
+
     this.grdAdminUser = Ext.create('Uums.admin_user.AdminUserGrid');
-    
-    this.grdAdminUser.on('selectchange', this.onGrdAdminUserSelectChange, this);
     this.grdAdminUser.on('create', function() {this.fireEvent('createadmin_user');}, this);
     this.grdAdminUser.on('edit', function(rec) {this.fireEvent('editadmin_user', rec);}, this);
     this.grdAdminUser.on('notifysuccess', function(feedback) {this.fireEvent('notifysuccess', feedback);}, this);
     this.grdAdminUser.getStore().on('load', this.onGrdAdminUserLoad, this);
 
-    config.items = [this.grdAdminUser];
+    config.items = [this.treeDepartment,this.grdAdminUser];
     
     this.addEvents({'createadmin_user': true, 'editadmin_user': true, 'createaddress': true, 'editaddress': true, 'notifysuccess': true});
     
@@ -28,11 +29,12 @@ Ext.define('Uums.admin_user.mainPanel', {
       this.grdAdminUser.getSelectionModel().select(0);
       var record = this.grdAdminUser.getStore().getAt(0);
       
-      this.onGrdAdminUserSelectChange(record);
+      //this.onGrdAdminUserSelectChange(record);
     }
   },
 
-  onGrdAdminUserSelectChange: function(record) {
+  onDepartmentSelectChange: function(department_id) {
+    this.grdAdminUser.refreshGrid(department_id);
     //this.pnlAccordion.grdAddressBook.iniGrid(record);
   }
 });

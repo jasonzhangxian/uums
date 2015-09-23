@@ -8,15 +8,16 @@ Ext.define('Uums.department.mainPanel', {
     config.border = false;
     config.layout = 'border';
     
-    this.grdDepartment = Ext.create('Uums.department.DepartmentGrid');
+    config.treeDepartment = Ext.create('Uums.department.DepartmentTreePanel');
     
-    this.grdDepartment.on('selectchange', this.onGrdDepartmentSelectChange, this);
-    this.grdDepartment.on('create', function() {this.fireEvent('createdepartment');}, this);
-    this.grdDepartment.on('edit', function(rec) {this.fireEvent('editdepartment', rec);}, this);
-    this.grdDepartment.on('notifysuccess', function(feedback) {this.fireEvent('notifysuccess', feedback);}, this);
-    this.grdDepartment.getStore().on('load', this.onGrdDepartmentLoad, this);
+    config.treeDepartment.on('selectchange', this.onGrdDepartmentSelectChange, this);
+    config.treeDepartment.on('create', function() {this.fireEvent('createdepartment');}, this);
+    config.treeDepartment.on('edit', function(rec) {this.fireEvent('editdepartment', rec);}, this);
+    config.treeDepartment.on('delete', function(rec) {this.fireEvent('deletedepartment', rec);}, this);
+    config.treeDepartment.on('notifysuccess', function(feedback) {this.fireEvent('notifysuccess', feedback);}, this);
+    config.treeDepartment.getStore().on('load', this.onGrdDepartmentLoad, this);
 
-    config.items = [this.grdDepartment];
+    config.items = [config.treeDepartment];
     
     this.addEvents({'createdepartment': true, 'editdepartment': true, 'createaddress': true, 'editaddress': true, 'notifysuccess': true});
     
@@ -24,15 +25,16 @@ Ext.define('Uums.department.mainPanel', {
   },
   
   onGrdDepartmentLoad: function() {
-    if (this.grdDepartment.getStore().getCount() > 0) {
-      this.grdDepartment.getSelectionModel().select(0);
-      var record = this.grdDepartment.getStore().getAt(0);
+    // if (this.grdDepartment.getStore().getCount() > 0) {
+    //   this.grdDepartment.getSelectionModel().select(0);
+    //   var record = this.grdDepartment.getStore().getAt(0);
       
-      this.onGrdDepartmentSelectChange(record);
-    }
+    //   this.onGrdDepartmentSelectChange(record);
+    // }
   },
 
   onGrdDepartmentSelectChange: function(record) {
+    debugger
     //this.pnlAccordion.grdAddressBook.iniGrid(record);
   }
 });

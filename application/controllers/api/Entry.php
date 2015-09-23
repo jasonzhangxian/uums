@@ -51,7 +51,7 @@ class Entry extends Api_Controller {
 		//根据请求接口引入相应文件
 		$this->load->library('api/'.($api = $this->check_api()));
 		//记录访问
-		//$this->api_logs->insert(array('api'=>$api,'ip_address'=>get_ip(),'log_time'=>time(),'system_code'=>$this->_sys_code));
+		$this->api_logs->insert(array('api'=>$api,'ip_address'=>get_ip(),'log_time'=>time(),'system_code'=>$this->_sys_code));
 		//执行调用
 		$this->{$api}->execute();
 	}

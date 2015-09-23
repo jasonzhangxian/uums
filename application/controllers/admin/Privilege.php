@@ -103,7 +103,7 @@ class Privilege extends REST_Controller {
 
         $data = array('privilege_name' => $privilege_name,
 						'sys_code' => $sys_code,
-						'parent_id' => $parent_id,
+						'parent_id' => intval($parent_id),
 						'privilege_code' => $privilege_code,
 						'sort_order' => $sort_order,
 						'type' => $type,

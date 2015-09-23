@@ -108,6 +108,24 @@ class Admin
     }
 
     /**
+     * Get modules
+     *
+     * @access public
+     * @return mixed $value
+     */
+    public function get_modules()
+    {
+        static $modules = NULL;
+
+        if (empty($modules))
+        {
+            $modules = $this->_data['modules'];
+        }
+
+        return $modules;
+    }
+
+    /**
      * Check whether admin is logged in
      *
      * @access public
@@ -154,7 +172,13 @@ class Admin
             $this->_data['username'] = $user_info->base_info->username;
             $this->_data['realname'] = $user_info->base_info->realname;
             $this->_data['new7_code'] = $user_info->base_info->new7_code;
-
+            $modules = array();
+            if(!empty($user_info->privilege)){
+                foreach ($user_info->privilege as $privilege) {
+                    $modules[] = $privilege->privilege_code;
+                }
+            }
+            $this->_data['modules'] = $modules;
             //set data to session
             $this->ci->session->set_userdata('admin_data', $this->_data);
             $this->ci->input->set_cookie('username', $user_info->base_info->username, 7*24*3600);

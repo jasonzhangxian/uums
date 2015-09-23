@@ -4,8 +4,10 @@ Ext.namespace("Uums.admin_user");
 {{ include('admin_user/admin_user_grid.tpl')}}
 {{ include('admin_user/admin_user_dialog.tpl')}}
 {{ include('admin_user/admin_user_main_panel.tpl')}}
+{{ include('admin_user/department_tree_panel.tpl')}}
 
 Uums.admin_user.request_url = '/admin/admin_user/admin_user';
+Uums.admin_user.department_request_url = '/admin/department/department';
 
 Ext.override(Uums.desktop.AdminUserWindow, {
   createWindow : function() {

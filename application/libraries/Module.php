@@ -82,35 +82,6 @@ class Module
         $this->_user_id = $admin_data['user_id'];
     }
 
-    /**
-     * Get modules
-     *
-     * @access public
-     * @param $id user id
-     * @return array
-     */
-    public function get_user_levels()
-    {
-        $modules = $this->_ci->admin_user->get_user_levels($this->_user_id);
-
-        //if it is all modules
-        if (in_array('*', $modules))
-        {
-            $modules = array();
-
-            $modules_map = directory_map(APPPATH . 'modules');
-
-            if (!empty($modules_map))
-            {
-                foreach($modules_map as $module)
-                {
-                    $modules[] = substr($module, 0, strrpos($module, '.'));
-                }
-            }
-        }
-
-        return $modules;
-    }
 
     /**
      * Get all modules

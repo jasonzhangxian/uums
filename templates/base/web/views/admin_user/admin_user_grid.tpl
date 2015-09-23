@@ -34,6 +34,8 @@ Ext.define('Uums.admin_user.AdminUserGrid', {
         'user_id',
         'username',
         'realname',
+        'department_id',
+        'grade_id',
         'new7_code',
         'sex',
         'mobile',
@@ -71,10 +73,9 @@ Ext.define('Uums.admin_user.AdminUserGrid', {
       { header: 'ID号', dataIndex: 'user_id', flex: 1},
       { header: '用户账号', dataIndex: 'username', width: 120},
       { header: '真实姓名', dataIndex: 'realname', width: 80},
-      { header: '手机号', dataIndex: 'mobile', width: 120},
-      { header: '性别', dataIndex: 'sex', renderer: statics.renderSex, width: 60, align: 'center'},
+      { header: '所属部门', dataIndex: 'department_id', width: 80},
+      { header: '职级', dataIndex: 'grade_id', width: 80},
       { header: '状态', dataIndex: 'is_deleted', renderer: statics.renderStatus, width: 60, align: 'center'},
-      { header: '邮箱', dataIndex: 'email', width: 120},
       {
         xtype:'actioncolumn', 
         width:40,
@@ -99,6 +100,9 @@ Ext.define('Uums.admin_user.AdminUserGrid', {
             scope: this                
         }*/]
       },
+      { header: '手机号', dataIndex: 'mobile', width: 120},
+      { header: '邮箱', dataIndex: 'email', width: 120},
+      { header: '性别', dataIndex: 'sex', renderer: statics.renderSex, width: 60, align: 'center'},
       { header: '工号', dataIndex: 'new7_code', width: 120},
       { header: '微信号', dataIndex: 'weixin_no', width: 120},
       { header: '入职时间', dataIndex: 'entry_time', width: 120}
@@ -150,7 +154,13 @@ Ext.define('Uums.admin_user.AdminUserGrid', {
   onRefresh: function() {
     this.getStore().load();
   },
-  
+  refreshGrid: function (department_id) {
+    
+    var store = this.getStore();
+
+    store.getProxy().extraParams['department_id'] = department_id;
+    store.load();
+  },
   onDelete: function(record) {
     var user_id = record.get('user_id');
     

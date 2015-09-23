@@ -110,6 +110,8 @@ Ext.define('Uums.admin_user.AdminUserDialog', {
             items: [{fieldLabel: '性别', boxLabel: '女', xtype:'radio', name: 'sex', hideLabel: true, inputValue: '2'}]
           }]
         },
+        {xtype: 'textfield', fieldLabel: '所属部门', name: 'department_id', allowBlank: false},
+        {xtype: 'textfield', fieldLabel: '职级', name: 'grade_id', allowBlank: false},
         {xtype: 'textfield', fieldLabel: '手机号', name: 'mobile', allowBlank: false},
         {xtype: 'textfield', fieldLabel: '微信号', name: 'weixin_no', allowBlank: true},
         {xtype: 'textfield', fieldLabel: '邮箱', name: 'email', allowBlank: true},

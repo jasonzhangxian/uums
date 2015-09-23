@@ -1,12 +1,12 @@
 
 Ext.namespace("Uums.department");
 
-{{ include('department/department_grid.tpl')}}
+{{ include('department/department_tree.tpl')}}
 {{ include('department/department_dialog.tpl')}}
 {{ include('department/department_main_panel.tpl')}}
 
 Uums.department.request_url = '/admin/department/department';
-                           <!--需要改-->
+
 Ext.override(Uums.desktop.DepartmentWindow, {
   createWindow : function() {
     var desktop = this.app.getDesktop();
@@ -17,12 +17,13 @@ Ext.override(Uums.desktop.DepartmentWindow, {
       
       this.pnl.on('createdepartment', this.onCreateDepartment, this);
       this.pnl.on('editdepartment', this.onEditDepartment, this);
+      this.pnl.on('deletedepartment', this.onDeleteDepartment, this);
       this.pnl.on('notifysuccess', this.onShowNotification, this);
       
       win = desktop.createWindow({
         id: 'department-win',
-        title: '部门列表',<!--此处需要改-->
-        width: 400,
+        title: '部门列表',
+        width: 250,
         height: 400,
         iconCls: 'icon-department-win',
         layout: 'fit',
@@ -40,13 +41,44 @@ Ext.override(Uums.desktop.DepartmentWindow, {
     dlg.show();
   },
   
-  onEditDepartment: function(rec) {
-    var dlg = this.createDepartmentDialog();
-    
-    dlg.setTitle('编辑部门');
-    dlg.show(rec.get('department_id'));<!--department_id-->
+  onEditDepartment: function(department_id) {
+    if(department_id == ''){
+        Ext.MessageBox.alert(UumsLanguage.msgInfoTitle, UumsLanguage.msgMustSelectOne);
+    }else{
+      var dlg = this.createDepartmentDialog();
+      dlg.setTitle('编辑部门');
+      dlg.show(department_id);
+    }
   },
-    
+  onDeleteDepartment: function(department_id) {
+    Ext.MessageBox.confirm(
+      UumsLanguage.msgWarningTitle, 
+      UumsLanguage.msgDeleteConfirm,
+      function(btn) {
+        if (btn == 'yes') {
+          Ext.Ajax.request({
+            url : Uums.department.request_url,
+            method: 'DELETE',
+            params: {
+                department_id: department_id
+            },
+            callback: function(options, success, response) {
+              var result = Ext.decode(response.responseText);
+              
+              if (result.success == true) {
+                this.pnl.treeDepartment.refresh();
+                this.app.showNotification({title: UumsLanguage.msgSuccessTitle, html: feedback});
+              } else {
+                Ext.MessageBox.alert(UumsLanguage.msgErrTitle, result.feedback);
+              }
+            }, 
+            scope: this
+          });
+        }
+      }, 
+      this
+    );
+  },
   createDepartmentDialog: function() {
     var desktop = this.app.getDesktop();
     var dlg = desktop.getWindow('department-dialog-win');    
@@ -55,7 +87,7 @@ Ext.override(Uums.desktop.DepartmentWindow, {
       dlg = desktop.createWindow({}, Uums.department.DepartmentDialog);             
       
       dlg.on('savesuccess', function(feedback) {
-        this.pnl.grdDepartment.onRefresh();
+        this.pnl.treeDepartment.refresh();
         this.app.showNotification({title: UumsLanguage.msgSuccessTitle, html: feedback});
       }, this);
     }
