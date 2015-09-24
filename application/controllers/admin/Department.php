@@ -41,6 +41,8 @@ class Department extends REST_Controller {
              if($department_id)
             {
                 $data = $this->department->get_one(array('department_id'=>$department_id));
+                $department_info = $this->department->get_one(array('department_id'=>$data['parent_id']));
+                $data['parent_name'] = $department_info['department_name'];
                 $result = array('success' => TRUE, 'data' => $data);
             }
             else
@@ -58,11 +60,14 @@ class Department extends REST_Controller {
                 if($department!==NULL){
                     foreach($department as $d)
                     {
+                        $department_info = $this->department->get_one(array('department_id'=>$g['parent_id']));
                         $records[] = array(
                                             'department_id' => $d['department_id'],
                                             'department_name' => $d['department_name'],
                                             'departmnt_level' => $d['departmnt_level'],
-                                            'parent_id' => $d['parent_id']);     
+                                            'parent_id' => $d['parent_id'],
+                                            'parent_name' => $department_info['department_name']
+                                        );     
                     }
                 }
                 $result = array(EXT_JSON_READER_TOTAL => $total, EXT_JSON_READER_ROOT => $records);
@@ -91,6 +96,12 @@ class Department extends REST_Controller {
                       'parent_id'=>$parent_id,
                       'order'=>$order
                      );
+
+        if($department_id == $parent_id)
+        {
+          $error = TRUE;
+          $feedback[] = "所属上级不能选自己！";
+        }
         if ($error === FALSE)
         {
             if($this->department->save((is_numeric($department_id) ? array('department_id'=>$department_id) : NULL),$data))

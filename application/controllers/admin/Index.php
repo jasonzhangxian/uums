@@ -102,7 +102,7 @@ class Index extends Admin_Controller
         $data['launchers'] = $this->desktop_setting->get_launchers();
         $data['styles'] = $this->desktop_setting->get_styles();
         $data['output'] = $this->desktop_setting->output_modules();
-        $a = $this->twig->parse('desktop.tpl', $data, TRUE);
+        $a = $this->twig->parse('desktop.js', $data, TRUE);
         echo $a;
     }
 
@@ -191,7 +191,7 @@ class Index extends Admin_Controller
         $tmp = explode('-', $module);
         $module = $tmp[0];
 		if($module){
-			$output = $this->twig->parse($module . '/main.tpl');
+			$output = $this->twig->parse($module . '/main.js');
 			$this->output->set_output($output);
 		}
     }

@@ -22,44 +22,52 @@ class New7_system extends REST_Controller {
      */
     public function new7_system_get()
     {
-        $system_id = $this->get('system_id');
-        if($system_id)
+      $action = $this->get('action');
+        if(!empty($action))
         {
-            $data = $this->new7_system->get_one(array('system_id'=>$system_id));
-            $result = array('success' => TRUE, 'data' => $data);
-        }else
+            $result = $this->{'new7_system_'.$action}();
+        }
+        else
         {
-            $start = $this->get('start') ? $this->get('start') : 0;
-            $limit = $this->get('limit') ? $this->get('limit') : MAX_DISPLAY_SEARCH_RESULTS;
-            $search = $this->get('search');
-            $where = array();
-            $records = array();
-            if(!empty($search)){
-                $where['like'] = array('system_name'=>$search);
-            }
-            $new7_system = $this->new7_system->get_all($where,'*','system_id','desc', $limit,$start);
+          $system_id = $this->get('system_id');
+          if($system_id)
+          {
+              $data = $this->new7_system->get_one(array('system_id'=>$system_id));
+              $result = array('success' => TRUE, 'data' => $data);
+          }else
+          {
+              $start = $this->get('start') ? $this->get('start') : 0;
+              $limit = $this->get('limit') ? $this->get('limit') : MAX_DISPLAY_SEARCH_RESULTS;
+              $search = $this->get('search');
+              $where = array();
+              $records = array();
+              if(!empty($search)){
+                  $where['like'] = array('system_name'=>$search);
+              }
+              $new7_system = $this->new7_system->get_all($where,'*','system_id','desc', $limit,$start);
 
-            $this->db->from('admin_user');
-            $this->db->select('username');
-            $this->db->where('user_id',$new7_system[0]['update_user_id']);
-            $query = $this->db->get()->result_array();
+              $this->db->from('admin_user');
+              $this->db->select('username');
+              $this->db->where('user_id',$new7_system[0]['update_user_id']);
+              $query = $this->db->get()->result_array();
 
-            $total = $this->new7_system->get_count($where);
-            if($new7_system!==NULL){
-                foreach($new7_system as $n)
-                {
-                    $records[] = array(
-                                    'system_id' => $n['system_id'],
-                                    'system_name' => $n['system_name'],
-                                    'sys_code'=>$n['sys_code'],
-                                    'system_url'=>$n['system_url'],
-                                    'update_time' => $n['update_time'],
-                                    'update_user_id' => $query[0]['username'],
-                                    'secret_key' => $n['secret_key']
-                                  );     
-                }
-            }
-            $result = array(EXT_JSON_READER_TOTAL => $total, EXT_JSON_READER_ROOT => $records);
+              $total = $this->new7_system->get_count($where);
+              if($new7_system!==NULL){
+                  foreach($new7_system as $n)
+                  {
+                      $records[] = array(
+                                      'system_id' => $n['system_id'],
+                                      'system_name' => $n['system_name'],
+                                      'sys_code'=>$n['sys_code'],
+                                      'system_url'=>$n['system_url'],
+                                      'update_time' => $n['update_time'],
+                                      'update_user_id' => $query[0]['username'],
+                                      'secret_key' => $n['secret_key']
+                                    );     
+                  }
+              }
+              $result = array(EXT_JSON_READER_TOTAL => $total, EXT_JSON_READER_ROOT => $records);
+          }
         }
         $this->response($result, REST_Controller::HTTP_OK);
     }
@@ -125,7 +133,38 @@ class New7_system extends REST_Controller {
         {
             $response = array('success' => FALSE, 'feedback' => '错误： 操作失败。');
         }
+        $this->response($response, REST_Controller::HTTP_OK);
+    }
 
-	$this->response($response, REST_Controller::HTTP_OK);
+    public function new7_system_export()
+    {
+      $this->load->library('Excel');
+      $this->excel->setExcelTitle('test');
+      $this->excel->setExcelFields(array('system_id'=>'系统编号','system_name'=>'系统名称','sys_code'=>'系统编码','system_url'=>'系统主页','update_time'=>'修改时间','update_user_id'=>'修改人','secret_key'=>'密钥'));
+
+      $search = $this->get('search');
+      $where = array();
+      $records = array();
+      if(!empty($search)){
+          $where['like'] = array('system_name'=>$search);
+      }
+      $new7_system = $this->new7_system->get_all($where,'*','system_id','desc');
+
+      if($new7_system!==NULL){
+          foreach($new7_system as $n)
+          {
+              $records[] = array(
+                              'system_id' => $n['system_id'],
+                              'system_name' => $n['system_name'],
+                              'sys_code'=>$n['sys_code'],
+                              'system_url'=>$n['system_url'],
+                              'update_time' => $n['update_time'],
+                              'update_user_id' => $n['update_user_id'],
+                              'secret_key' => $n['secret_key']
+                            );     
+          }
+      }
+      $file_url = $this->excel->extraExcel($records);
+      return array('success' => TRUE, 'feedback' => $file_url);
     }
 }

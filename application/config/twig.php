@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 // 默认扩展名
-$config['extension'] = ".tpl";
+$config['extension'] = ".js";
 
 // 默认模版路劲
 $config['template_dir'] = FCPATH . "templates/base/web/views/";
