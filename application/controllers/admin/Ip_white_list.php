@@ -48,22 +48,20 @@ class Ip_white_list extends REST_Controller {
             }
             $ip_white_list = $this->ip_white_list->get_all($where,'*','id','desc', $limit,$start);
             
-            $this->db->from('admin_user');
-            $this->db->select('username');
-            $this->db->where('user_id',$ip_white_list[0]['update_user_id']);
-            $query = $this->db->get()->result_array();
-            
             $total = $this->ip_white_list->get_count($where);
-            if($ip_white_list!==NULL){
-                foreach($ip_white_list as $ip)
-                {
-                    $records[] = array(
-                                        'id' => $ip['id'],
-                                        'ip_address' => $ip['ip_address'],
-                                        'update_time' => $ip['update_time'],
-                                        'update_user_id' => $query[0]['username']
-                                      );     
-                }
+            if($ip_white_list!==NULL)
+            {
+              $this->load->model('admin_user_model','admin_user');
+              foreach($ip_white_list as $ip)
+              {
+                $admin_info = $this->admin_user->get_one(array('user_id'=>$ip['update_user_id']));
+                $records[] = array(
+                                    'id' => $ip['id'],
+                                    'ip_address' => $ip['ip_address'],
+                                    'update_time' => $ip['update_time'],
+                                    'update_user_id' => $admin_info['realname']
+                                  );     
+              }
             }
             $result = array(EXT_JSON_READER_TOTAL => $total, EXT_JSON_READER_ROOT => $records);
         }

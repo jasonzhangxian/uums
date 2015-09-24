@@ -31,6 +31,7 @@
     Uums.new7_system_request_url = '{{ site_url('/admin/new7_system/new7_system') }}';
     Uums.privilege_request_url = '{{ site_url('/admin/privilege/privilege') }}';
     Uums.quarters_request_url = '{{ site_url('/admin/quarters/quarters') }}';
+    Uums.user_kpi_request_url = '{{ site_url('/admin/user_kpi/user_kpi') }}';
     Uums.Languages = []; 
     var UumsLanguage = {};
     UumsLanguage = {DesktopSetting: "桌面设置",

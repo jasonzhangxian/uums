@@ -1,16 +1,6 @@
 
-Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
+Ext.define('Uums.user_kpi.UserKpiGrid', {
   extend: 'Ext.grid.Panel',
-  
-  statics: {
-    renderStatus: function(status) {
-      if(status == 0) {
-        return '<img class="img-button" src="{{ icon_status_url('icon_status_green.gif') }}" />&nbsp;<img class="img-button btn-status-off" style="cursor: pointer" src="{{ icon_status_url('icon_status_red_light.gif') }}" />';
-      }else {
-        return '<img class="img-button btn-status-on" style="cursor: pointer" src="{{ icon_status_url('icon_status_green_light.gif') }}" />&nbsp;<img class="img-button" src= "{{ icon_status_url('icon_status_red.gif') }}" />';
-      }
-    }
-  },
   
   constructor: function(config) {
     var statics = this.statics();
@@ -22,16 +12,21 @@ Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
     config.viewConfig = {emptyText: UumsLanguage.gridNoRecords};
     
     config.store = Ext.create('Ext.data.Store', {
-      fields:[<!--此处需要改-->
-        'id',
-        'ip_address',
-        'update_time',
-        'update_user_id'
+      fields:[
+        'user_id',
+        'realname',
+        'department_name',
+        'grade_name',
+        'month',
+        'kpi1',
+        'kpi2',
+        'salary',
+        'performance_pay'
       ],
       pageSize: Uums.CONF.GRID_PAGE_SIZE,
       proxy: {
         type: 'ajax',
-        url : Uums.ip_white_list_request_url,
+        url : Uums.user_kpi_request_url,
         reader: {
           type: 'json',
           root: Uums.CONF.JSON_READER_ROOT,
@@ -47,39 +42,41 @@ Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
   				var text = Ext.JSON.decode(operation.response.responseText);
   				if(typeof(text.error) != 'undefined' && text.error == 'not login'){
   					Ext.MessageBox.alert('提示', '请登录',function(){
-  						window.location.href = '/admin/login';
+  						window.location.href = '{{ site_url('/admin/login') }}';
   					});
   				}
   			}
   		}
   	});
-    config.columns =[<!--此处需要改-->
-      { header: 'IP地址', dataIndex: 'ip_address', width: 100},
-      { header: '修改时间', dataIndex: 'update_time', width:140},
-      { header: '修改人', dataIndex: 'update_user_id', flex:1},
-      <!--{ header: '状态', dataIndex: 'is_closed', renderer: statics.renderStatus, width: 80, align: 'center'},-->
+    config.columns =[
+      { header: '真实姓名', dataIndex: 'realname', width: 60},
+      { header: '所属部门', dataIndex: 'department_name', width: 80},
+      { header: '职级', dataIndex: 'grade_name', flex: 1},
+      { header: '月份', dataIndex: 'month', width: 60},
+      { header: 'KPI1', dataIndex: 'kpi1', width: 40},
+      { header: 'KPI2', dataIndex: 'kpi2', width: 40},
+      { header: '基本工资', dataIndex: 'salary', width: 70},
+      { header: '绩效工资', dataIndex: 'performance_pay', width: 70},
       {
         xtype:'actioncolumn', 
-        width:80,
+        width: 60,
         header: '操作',
         items: [{
           iconCls: 'icon-action icon-edit-record',
           tooltip: UumsLanguage.tipEdit,
           handler: function(grid, rowIndex, colIndex) {
             var rec = grid.getStore().getAt(rowIndex);
-            
             this.fireEvent('edit', rec);
           },
           scope: this
         },{
-            iconCls: 'icon-action icon-delete-record',
-            tooltip: UumsLanguage.tipDelete,
-            handler: function(grid, rowIndex, colIndex) {
-              var rec = grid.getStore().getAt(rowIndex);
-              
-              this.onDelete(rec);
-            },
-            scope: this                
+          iconCls: 'icon-action icon-delete-record',
+          tooltip: UumsLanguage.tipDelete,
+          handler: function(grid, rowIndex, colIndex) {
+            var rec = grid.getStore().getAt(rowIndex);
+            this.onDelete(rec);
+          },
+          scope: this
         }]
       }
     ];
@@ -106,6 +103,13 @@ Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
       handler: this.onRefresh,
       scope: this
     },
+    '-',
+    { 
+      text: UumsLanguage.btnExport,
+      iconCls: 'invoice',
+      handler: this.onExport,
+      scope: this
+    },
     '->',
     config.search,
     '',
@@ -119,8 +123,7 @@ Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
       xtype: 'pagingtoolbar',
       store: config.store,
       dock: 'bottom',
-      displayInfo: true,
-      displayMsg: UumsLanguage.displayMsg
+      displayInfo: true
     }];  
     
     this.addEvents({'selectchange' : true, 'create' : true, 'edit': true, 'notifysuccess': true});  
@@ -131,20 +134,26 @@ Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
   onRefresh: function() {
     this.getStore().load();
   },
-  
+  refreshGrid: function (department_id) {
+    
+    var store = this.getStore();
+
+    store.getProxy().extraParams['department_id'] = department_id;
+    store.load();
+  },
   onDelete: function(record) {
-    var ip_white_listId = record.get('id');
-    <!--ip_white_list_id-->
+    var user_id = record.get('user_id');
+    
     Ext.MessageBox.confirm(
       UumsLanguage.msgWarningTitle, 
       UumsLanguage.msgDeleteConfirm,
       function(btn) {
         if (btn == 'yes') {
           Ext.Ajax.request({
-            url : Uums.ip_white_list_request_url,
-            method: 'DELETE',
+            url : Uums.user_kpi_request_url,
+			      method: 'DELETE',
             params: {
-                id: ip_white_listId<!--ip_white_list_id: ip_white_listId-->
+              user_id: user_id
             },
             callback: function(options, success, response) {
               var result = Ext.decode(response.responseText);
@@ -165,6 +174,39 @@ Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
     );
   },
   
+  onExport: function() {
+    //执行导出
+    var filter = this.search.getValue() || null;
+    var export_loading = new Ext.LoadMask(Ext.get('user_kpi-win'),{msg:'正在生成表格文件...'});  
+    export_loading.show();
+    Ext.Ajax.request({
+      url: Uums.user_kpi_request_url,
+      method: 'GET',
+      params: {
+        action: 'export',
+        search: filter
+      },
+      timeout: 120000,
+      callback: function(options, success, response) {
+        export_loading.hide();
+        if(success){
+          var result = Ext.decode(response.responseText);
+          if (result.success == true) {
+            Ext.MessageBox.alert(UumsLanguage.msgSuccessTitle, "<a href='{{base_url}}"+result.feedback+"'>导出成功，点击下载文件</a>");
+          }else{
+            Ext.MessageBox.alert(UumsLanguage.msgErrTitle, result.feedback);
+          }
+        }else{
+          if(response.timedout)
+            Ext.MessageBox.alert(UumsLanguage.msgErrTitle, '请求超时，请稍后重试...');
+          else
+            Ext.MessageBox.alert(UumsLanguage.msgErrTitle, response.statusText);
+        }
+      },
+      scope: this
+    });
+    //显示下载链接
+  },
   onSearch: function () {
     var filter = this.search.getValue() || null;
     var store = this.getStore();
@@ -191,13 +233,13 @@ Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
 
       if (action != 'img-button') {
         var record = this.getStore().getAt(index);
-        var ip_white_listId = record.get('id');<!--ip_white_list_id-->
+        var user_id = record.get('user_id');
         
         switch(action) {
           case 'status-off':
           case 'status-on':
             flag = (action == 'status-on') ? 0 : 1;
-            this.onAction(module, ip_white_listId, index, flag);
+            this.onAction(module, user_id, index, flag);
 
             break;
         }
@@ -205,12 +247,12 @@ Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
     }
   },
   
-  onAction: function(action, ip_white_listId, index, flag) {
+  onAction: function(action, user_id, index, flag) {
     Ext.Ajax.request({
-      url: Uums.ip_white_list_request_url,
-      method: 'PUT',
+      url: Uums.user_kpi_request_url,
+	    method: 'PUT',
       params: {
-        id: ip_white_listId,<!--ip_white_list_id-->
+        user_id: user_id,
         flag: flag
       },
       callback: function(options, success, response) {
@@ -219,7 +261,7 @@ Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
         if (result.success == true) {
           var store = this.getStore();
           
-          store.getAt(index).set('is_closed', flag);<!--此处需要改-->
+          store.getAt(index).set('is_deleted', flag);
           
           this.fireEvent('notifysuccess', result.feedback);
         }
@@ -229,5 +271,5 @@ Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
   }
 });
 
-/* End of file ip_white_list_grid.tpl */
-/* Location: ./templates/base/web/views/ip_white_list/ip_white_list_grid.tpl */
+/* End of file user_kpi_grid.tpl */
+/* Location: ./templates/base/web/views/user_kpi/user_kpi_grid.tpl */

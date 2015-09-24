@@ -176,9 +176,9 @@ class MY_Model extends CI_Model {
     /*
      * 构造where
      * 
-     * @access   private
+     * @access   protected
      */
-    private function _construct_where($where = array())
+    protected function _construct_where($where = array())
     {
         if($where)
         {

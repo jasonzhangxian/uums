@@ -19,66 +19,73 @@ class Admin_user extends REST_Controller {
      */
     public function admin_user_get()
     {
-        $user_id = $this->get('user_id');
-        $this->load->model('department_model','department');
-        $this->load->model('grade_model','grade');
-		if($user_id)
-		{
-			$data = $this->admin_user->get_one(array('user_id'=>$user_id));
-            if(!empty($data))
+        $action = $this->get('action');
+        if(!empty($action))
+        {
+            $result = $this->{'admin_user_'.$action}();
+        }else
             {
-                unset($data['password']);
-                $department_info = $this->department->get_one(array('department_id'=>$data['department_id']));
-                $data['department_name'] = $department_info['department_name'];
-                $grade_info = $this->grade->get_one(array('grade_id'=>$data['grade_id']));
-                $data['grade_name'] = $grade_info['grade_name'];
-            }
-			$result = array('success' => TRUE, 'data' => $data);
-		}else
-		{
-			$start = $this->get('start') ? $this->get('start') : 0;
-			$limit = $this->get('limit') ? $this->get('limit') : MAX_DISPLAY_SEARCH_RESULTS;
-			$search = $this->get('search');
-            $department_id = $this->get('department_id');
-			$where = array();
-			$records = array();
-			if(!empty($search)){
-				$where['like'] = array('username'=>$search,'realname'=>$search);
-			}
-            $department_id = intval($department_id);
-            if($department_id){
-                $all_children = $this->department->get_all_children($department_id);
-                $all_children[] = $department_id;
-                $where['in department_id'] = $all_children;
-            }
-			$admin_user = $this->admin_user->get_all($where,'*','user_id','desc', $limit,$start);
-			$total = $this->admin_user->get_count($where);
-			if ($admin_user !== NULL)
-			{
-				foreach($admin_user as $q)
-				{
-                    $department_info = $this->department->get_one(array('department_id'=>$q['department_id']));
-                    $grade_info = $this->grade->get_one(array('grade_id'=>$q['grade_id']));
-					$records[] = array(
-						'user_id' => $q['user_id'],
-						'username' => $q['username'],
-						'realname' => $q['realname'],
-						'new7_code' => $q['new7_code'],
-						'sex' => $q['sex'],
-						'mobile' => $q['mobile'],
-						'weixin_no' => $q['weixin_no'],
-						'email' => $q['email'],
-						'entry_time' => $q['entry_time'],
-                        'department_id' => $q['department_id'],
-                        'department_name' => $department_info['department_name'],
-                        'grade_id' => $q['grade_id'],
-                        'grade_name' => $grade_info['grade_name'],
-						'is_deleted' => $q['is_deleted']
-						);     
-				}
-			}
-			$result = array(EXT_JSON_READER_TOTAL => $total, EXT_JSON_READER_ROOT => $records);
-		}
+            $user_id = $this->get('user_id');
+            $this->load->model('department_model','department');
+            $this->load->model('grade_model','grade');
+    		if($user_id)
+    		{
+    			$data = $this->admin_user->get_one(array('user_id'=>$user_id));
+                if(!empty($data))
+                {
+                    unset($data['password']);
+                    $department_info = $this->department->get_one(array('department_id'=>$data['department_id']));
+                    $data['department_name'] = $department_info['department_name'];
+                    $grade_info = $this->grade->get_one(array('grade_id'=>$data['grade_id']));
+                    $data['grade_name'] = $grade_info['grade_name'];
+                }
+    			$result = array('success' => TRUE, 'data' => $data);
+    		}else
+    		{
+    			$start = $this->get('start') ? $this->get('start') : 0;
+    			$limit = $this->get('limit') ? $this->get('limit') : MAX_DISPLAY_SEARCH_RESULTS;
+    			$search = $this->get('search');
+                $department_id = $this->get('department_id');
+    			$where = array();
+    			$records = array();
+    			if(!empty($search)){
+    				$where['like'] = array('username'=>$search,'realname'=>$search);
+    			}
+                $department_id = intval($department_id);
+                if($department_id){
+                    $all_children = $this->department->get_all_children($department_id);
+                    $all_children[] = $department_id;
+                    $where['in department_id'] = $all_children;
+                }
+    			$admin_user = $this->admin_user->get_all($where,'*','user_id','desc', $limit,$start);
+    			$total = $this->admin_user->get_count($where);
+    			if ($admin_user !== NULL)
+    			{
+    				foreach($admin_user as $q)
+    				{
+                        $department_info = $this->department->get_one(array('department_id'=>$q['department_id']));
+                        $grade_info = $this->grade->get_one(array('grade_id'=>$q['grade_id']));
+    					$records[] = array(
+    						'user_id' => $q['user_id'],
+    						'username' => $q['username'],
+    						'realname' => $q['realname'],
+    						'new7_code' => $q['new7_code'],
+    						'sex' => $q['sex'],
+    						'mobile' => $q['mobile'],
+    						'weixin_no' => $q['weixin_no'],
+    						'email' => $q['email'],
+    						'entry_time' => $q['entry_time'],
+                            'department_id' => $q['department_id'],
+                            'department_name' => $department_info['department_name'],
+                            'grade_id' => $q['grade_id'],
+                            'grade_name' => $grade_info['grade_name'],
+    						'is_deleted' => $q['is_deleted']
+    						);     
+    				}
+    			}
+    			$result = array(EXT_JSON_READER_TOTAL => $total, EXT_JSON_READER_ROOT => $records);
+    		}
+        }
 		$this->response($result, REST_Controller::HTTP_OK);
     }
 
@@ -223,5 +230,12 @@ class Admin_user extends REST_Controller {
         }
 
 		$this->response($response, REST_Controller::HTTP_OK);
+    }
+
+    public function admin_user_list()
+    {
+        $data = array();
+        $data = $this->admin_user->get_all(array(),'user_id,realname','user_id','desc');
+        return $data;
     }
 }
