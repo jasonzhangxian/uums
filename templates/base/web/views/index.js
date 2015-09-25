@@ -47,6 +47,8 @@
                     beforePageText: "前页",
                     btnActivate: "发布",
                     btnExport: "导出",
+                    btnImport: "导入",
+                    btnExportSum: "汇总导出",
                     btnAdd: "添加",
                     btnAddDir: "新建文件夹",
                     btnAddFile: "新建文件",

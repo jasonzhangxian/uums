@@ -4,6 +4,7 @@ Ext.namespace("Uums.user_kpi");
 {{ include('user_kpi/user_kpi_grid.js')}}
 {{ include('user_kpi/user_kpi_dialog.js')}}
 {{ include('user_kpi/user_kpi_main_panel.js')}}
+{{ include('user_kpi/user_kpi_upload_dialog.js')}}
 {{ include('common/department_tree_panel.js')}}
 
 
@@ -18,6 +19,7 @@ Ext.override(Uums.desktop.UserKpiWindow, {
       
       this.pnl.on('createuser_kpi', this.onCreateUserKpi, this);
       this.pnl.on('edituser_kpi', this.onEditUserKpi, this);
+      this.pnl.on('importuser_kpi', this.onImportUserKpi, this);
       this.pnl.on('notifysuccess', this.onShowNotification, this);
       
       win = desktop.createWindow({
@@ -48,7 +50,22 @@ Ext.override(Uums.desktop.UserKpiWindow, {
 
     dlg.show(rec.get('user_id'));
   },
-    
+  onImportUserKpi: function() {
+    var config = {};
+    var desktop = this.app.getDesktop();
+    var dlg = desktop.getWindow('user_kpi-upload-dialog-win');    
+
+    if (!dlg) {
+      dlg = desktop.createWindow(config, Uums.user_kpi.UplaodDialog);             
+      
+      dlg.on('savesuccess', function(feedback) {
+        this.pnl.grdUserKpi.onRefresh();
+        this.app.showNotification({title: UumsLanguage.msgSuccessTitle, html: feedback});
+      }, this);
+    }
+
+    dlg.show();
+  },
   createUserKpiDialog: function(config) {
     var desktop = this.app.getDesktop();
     var dlg = desktop.getWindow('user_kpi-dialog-win');    
@@ -64,7 +81,6 @@ Ext.override(Uums.desktop.UserKpiWindow, {
     
     return dlg;    
   },
-  
 
   
   onShowNotification: function(feedback) {

@@ -14,6 +14,7 @@ Ext.define('Uums.user_kpi.mainPanel', {
     this.grdUserKpi = Ext.create('Uums.user_kpi.UserKpiGrid');
     this.grdUserKpi.on('create', function() {this.fireEvent('createuser_kpi');}, this);
     this.grdUserKpi.on('edit', function(rec) {this.fireEvent('edituser_kpi', rec);}, this);
+    this.grdUserKpi.on('import', function(rec) {this.fireEvent('importuser_kpi', rec);}, this);
     this.grdUserKpi.on('delete', function(rec) {this.fireEvent('deleteuser_kpi', rec);}, this);
     this.grdUserKpi.on('notifysuccess', function(feedback) {this.fireEvent('notifysuccess', feedback);}, this);
     this.grdUserKpi.getStore().on('load', this.onGrdUserKpiLoad, this);

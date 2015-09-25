@@ -13,6 +13,7 @@ Ext.define('Uums.user_kpi.UserKpiGrid', {
     
     config.store = Ext.create('Ext.data.Store', {
       fields:[
+        'id',
         'user_id',
         'realname',
         'department_name',
@@ -105,9 +106,25 @@ Ext.define('Uums.user_kpi.UserKpiGrid', {
     },
     '-',
     { 
+      text: UumsLanguage.btnImport,
+      iconCls: 'quickCreate',
+      handler: function() {
+        this.fireEvent('import');
+      },
+      scope: this
+    },
+    '-',
+    { 
       text: UumsLanguage.btnExport,
       iconCls: 'invoice',
       handler: this.onExport,
+      scope: this
+    },
+    '-',
+    { 
+      text: UumsLanguage.btnExportSum,
+      iconCls: 'invoice',
+      handler: this.onExportSum,
       scope: this
     },
     '->',
@@ -142,7 +159,7 @@ Ext.define('Uums.user_kpi.UserKpiGrid', {
     store.load();
   },
   onDelete: function(record) {
-    var user_id = record.get('user_id');
+    var id = record.get('id');
     
     Ext.MessageBox.confirm(
       UumsLanguage.msgWarningTitle, 
@@ -153,7 +170,7 @@ Ext.define('Uums.user_kpi.UserKpiGrid', {
             url : Uums.user_kpi_request_url,
 			      method: 'DELETE',
             params: {
-              user_id: user_id
+              id: id
             },
             callback: function(options, success, response) {
               var result = Ext.decode(response.responseText);
@@ -173,7 +190,7 @@ Ext.define('Uums.user_kpi.UserKpiGrid', {
       this
     );
   },
-  
+
   onExport: function() {
     //执行导出
     var filter = this.search.getValue() || null;
@@ -184,6 +201,39 @@ Ext.define('Uums.user_kpi.UserKpiGrid', {
       method: 'GET',
       params: {
         action: 'export',
+        search: filter
+      },
+      timeout: 120000,
+      callback: function(options, success, response) {
+        export_loading.hide();
+        if(success){
+          var result = Ext.decode(response.responseText);
+          if (result.success == true) {
+            Ext.MessageBox.alert(UumsLanguage.msgSuccessTitle, "<a href='{{base_url}}"+result.feedback+"'>导出成功，点击下载文件</a>");
+          }else{
+            Ext.MessageBox.alert(UumsLanguage.msgErrTitle, result.feedback);
+          }
+        }else{
+          if(response.timedout)
+            Ext.MessageBox.alert(UumsLanguage.msgErrTitle, '请求超时，请稍后重试...');
+          else
+            Ext.MessageBox.alert(UumsLanguage.msgErrTitle, response.statusText);
+        }
+      },
+      scope: this
+    });
+    //显示下载链接
+  },
+  onExportSum: function() {
+    //执行导出
+    var filter = this.search.getValue() || null;
+    var export_loading = new Ext.LoadMask(Ext.get('user_kpi-win'),{msg:'正在生成表格文件...'});  
+    export_loading.show();
+    Ext.Ajax.request({
+      url: Uums.user_kpi_request_url,
+      method: 'GET',
+      params: {
+        action: 'export_sum',
         search: filter
       },
       timeout: 120000,
