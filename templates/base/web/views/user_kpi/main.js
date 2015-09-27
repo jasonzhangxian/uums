@@ -5,7 +5,6 @@ Ext.namespace("Uums.user_kpi");
 {{ include('user_kpi/user_kpi_dialog.js')}}
 {{ include('user_kpi/user_kpi_main_panel.js')}}
 {{ include('user_kpi/user_kpi_upload_dialog.js')}}
-{{ include('common/department_tree_panel.js')}}
 
 
 

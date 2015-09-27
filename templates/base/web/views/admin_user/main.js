@@ -4,9 +4,6 @@ Ext.namespace("Uums.admin_user");
 {{ include('admin_user/admin_user_grid.js')}}
 {{ include('admin_user/admin_user_dialog.js')}}
 {{ include('admin_user/admin_user_main_panel.js')}}
-{{ include('common/department_tree_panel.js')}}
-{{ include('common/department.js')}}
-{{ include('common/grade.js')}}
 
 
 

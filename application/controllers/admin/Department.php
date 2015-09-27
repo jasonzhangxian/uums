@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 require APPPATH . 'libraries/REST_Controller.php';
+
 class Department extends REST_Controller {
 
 	/**
@@ -14,14 +15,6 @@ class Department extends REST_Controller {
         $this->load->model('department_model','department');
     }
 
-    public function index()
-    {
-            //$this->twig->render('department',$this->department->get_one());
-            $department = $this->department->get_one();
-            $this->twig->assign('user_name',$department['user_name']);
-            $this->twig->render('department');
-    }
-     //后添加
     
     /**
      * 获取部门信息
@@ -35,7 +28,8 @@ class Department extends REST_Controller {
         if(!empty($action))
         {
             $result = $this->{'department_'.$action}();
-        }else
+        }
+        else
         {
             $department_id = $this->get('department_id');
              if($department_id)
@@ -52,12 +46,14 @@ class Department extends REST_Controller {
                 $search = $this->get('search');
                 $where = array();
                 $records = array();
-                if(!empty($search)){
+                if(!empty($search))
+                {
                     $where['like'] = array('department_name'=>$search);
                 }
                 $department = $this->department->get_all($where,'*','department_id','desc', $limit,$start);
                 $total = $this->department->get_count($where);
-                if($department!==NULL){
+                if($department!==NULL)
+                {
                     foreach($department as $d)
                     {
                         $department_info = $this->department->get_one(array('department_id'=>$g['parent_id']));
@@ -83,6 +79,7 @@ class Department extends REST_Controller {
      */
     public function department_post()
     {
+        $this->load->library('form_validation');
         $department_id = $this->post('department_id');
         $department_name = $this->post('department_name');
         $departmnt_level = $this->post('departmnt_level');
@@ -101,6 +98,19 @@ class Department extends REST_Controller {
         {
           $error = TRUE;
           $feedback[] = "所属上级不能选自己！";
+        }
+
+        $department_name_error_message = array('required'  => '%s不能为空.',
+                                        'min_length' => '%s长度必须大于2位',
+                                        'is_unique' => '您输入的%s系统中已存在.'
+                                  );
+        $department_name_rule = 'trim|required|min_length[3]|is_unique[department.department_name]';
+        $this->form_validation->set_rules('department_name','部门名称',$department_name_rule,$department_name_error_message);
+
+        if ($this->form_validation->run() == false) 
+        {
+          $error = TRUE;
+          $feedback[] = validation_errors();
         }
         if ($error === FALSE)
         {
@@ -135,13 +145,20 @@ class Department extends REST_Controller {
         $this->load->model(array('admin_user_model','grade_to_department_model'));
         $admin_user = $this->admin_user_model->get_all(array('department_id'=>$department_id));
         $grade = $this->grade_to_department_model->get_all(array('department_id'=>$department_id));
-        if($children){
+        if($children)
+        {
             $response = array('success' => FALSE, 'feedback' => '错误： 存在下属部门，不可以删除。');
-        }else if($admin_user){
+        }
+        else if($admin_user)
+        {
             $response = array('success' => FALSE, 'feedback' => '错误： 该部门有仍有用户，不可以删除。');
-        }else if($grade){
+        }
+        else if($grade)
+        {
             $response = array('success' => FALSE, 'feedback' => '错误： 该部门有仍有职级，不可以删除。');
-        }else{
+        }
+        else
+        {
             if ($this->department->delete(array('department_id'=>$department_id)))
             {
                 $response = array('success' => TRUE, 'feedback' => '成功： 此项操作成功。');
@@ -156,6 +173,14 @@ class Department extends REST_Controller {
         $this->response($response, REST_Controller::HTTP_OK);
     }
 
+
+    /**
+     * 获取部门树形结构
+     *
+     * @access public
+     * @param $node
+     * @return string
+     */
     private function department_tree()
     {
         $node = $this->get('node');

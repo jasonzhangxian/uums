@@ -4,7 +4,6 @@ Ext.namespace("Uums.grade");
 {{ include('grade/grade_tree.js')}}
 {{ include('grade/grade_dialog.js')}}
 {{ include('grade/grade_main_panel.js')}}
-{{ include('common/grade.js')}}
 
 Ext.override(Uums.desktop.GradeWindow, {
   createWindow : function() {

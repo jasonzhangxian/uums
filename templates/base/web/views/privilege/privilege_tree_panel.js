@@ -12,8 +12,8 @@ Ext.define('Uums.privilege.PrivilegeTreePanel', {
     config.containerScroll = true;
     config.split = true;
     config.width = 170;
-    config.rootVisible = true;
-    config.currentPrivilegeId = '0';
+    config.rootVisible = false;
+    config.currentPrivilegeId = '';
     
     config.store = Ext.create('Ext.data.TreeStore', {
       proxy: {
@@ -22,7 +22,7 @@ Ext.define('Uums.privilege.PrivilegeTreePanel', {
         extraParams : {action:'tree'}
       },
       root: {
-        id: 0,
+        id: '',
         text: '--所有权限--',
         leaf: false,
         expandable: true,  

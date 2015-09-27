@@ -56,11 +56,10 @@ Ext.define('Uums.new7_system.New7_systemGrid', {
   		}
   	});
     config.columns =[
-      { header: '系统编号', dataIndex: 'system_id', width: 80},
       { header: '系统名称', dataIndex: 'system_name', flex:1},
       { header: '系统代码', dataIndex: 'sys_code', flex:1},
-      { header: '系统路径', dataIndex: 'system_url', flex:1},
-      { header: '修改时间', dataIndex: 'update_time', width:100},
+      { header: '系统地址', dataIndex: 'system_url', flex:1},
+      { header: '修改时间', dataIndex: 'update_time', width:120},
       { header: '修改用户', dataIndex: 'update_user_id', width:100},
       {
         xtype:'actioncolumn', 

@@ -23,14 +23,16 @@ class Quarters extends REST_Controller {
         if(!empty($action))
         {
             $result = $this->{'quarters_'.$action}();
-        }else
+        }
+        else
         {
             $quarters_id = $this->get('quarters_id');
     		if($quarters_id)
     		{
     			$data = $this->quarters->get_one(array('quarters_id'=>$quarters_id));
     			$result = array('success' => TRUE, 'data' => $data);
-    		}else
+    		}
+            else
     		{
     			$start = $this->get('start') ? $this->get('start') : 0;
     			$limit = $this->get('limit') ? $this->get('limit') : MAX_DISPLAY_SEARCH_RESULTS;
@@ -67,6 +69,7 @@ class Quarters extends REST_Controller {
      */
     public function quarters_post()
     {
+        $this->load->library('form_validation');
         $quarters_id = $this->input->post('quarters_id');
         $quarters_name = $this->input->post('quarters_name');
         $quarters_desc = $this->input->post('quarters_desc');
@@ -79,13 +82,27 @@ class Quarters extends REST_Controller {
         $error = FALSE;
         $feedback = array();
 
-        //customer firstname
-        if (empty($quarters_name))
+
+        $quarters_name_error_message = array('required'  => '%s不能为空.',
+                                        'min_length' => '%s长度必须大于1位',
+                                        'is_unique' => '您输入的%s系统中已存在.'
+                                  );
+        if(is_numeric($quarters_id))
+        {
+            $quarters_info = $this->quarters->get_one(array('quarters_id'=>$quarters_id));
+            $quarters_name_rule = 'trim|required|min_length[2]'.($quarters_info['quarters_name'] != $quarters_name?'|is_unique[quarters.quarters_name]':'');
+        }
+        else
+        {
+            $quarters_name_rule = 'trim|required|min_length[2]|is_unique[quarters.quarters_name]';
+        }
+        $this->form_validation->set_rules('quarters_name','岗位名称',$quarters_name_rule,$quarters_name_error_message);
+
+        if ($this->form_validation->run() == false) 
         {
             $error = TRUE;
-            $feedback[] = '岗位名称不能为空';
+            $feedback[] = validation_errors();
         }
-
         //save customer data
         if ($error === FALSE)
         {
@@ -167,8 +184,10 @@ class Quarters extends REST_Controller {
         $this->load->model('User_to_quarters_model','user_to_quarters');
         $user_quarters = $this->user_to_quarters->get_all(array('user_id'=>$user_id));
         $user_quarters_arr = array();
-        if(!empty($user_quarters)){
-            foreach($user_quarters as $val){
+        if(!empty($user_quarters))
+        {
+            foreach($user_quarters as $val)
+            {
                 $user_quarters_arr[] = $val['quarters_id'];
             }
         }

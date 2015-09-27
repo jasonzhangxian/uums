@@ -156,5 +156,10 @@
   <script type="text/javascript" src="{{js_url}}desktop/ux/notification.js"></script>
   
   <!-- GNERATING Uums DESKTOP -->
+  <script type="text/javascript">
+  {{ include('common/department_tree_panel.js')}}
+  {{ include('common/department.js')}}
+  {{ include('common/grade.js')}}
+  </script>
   <script type="text/javascript" src="{{base_url}}admin/index/desktop"></script>
   {% endblock %}

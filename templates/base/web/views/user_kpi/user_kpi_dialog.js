@@ -10,7 +10,7 @@ Ext.define('Uums.user_kpi.UserKpiDialog', {
     config.id = 'user_kpi-dialog-win';
     config.title = '新建绩效信息';
     config.width = 220;
-    config.height = 280;
+    config.height = 320;
     config.modal = true;
     config.iconCls = 'icon-user_kpi-win';
     config.layout = 'fit';
@@ -114,6 +114,8 @@ Ext.define('Uums.user_kpi.UserKpiDialog', {
     });
     var items = [];
     items.push(this.cboAdminUser);
+    items.push({xtype: 'textfield', fieldLabel: '所属部门', name: 'department_name', allowBlank: false});
+    items.push({xtype: 'textfield', fieldLabel: '职级', name: 'grade_name', allowBlank: false});
     items.push({xtype: 'datefield', fieldLabel: '月份', name: 'month',editable: false, format: 'Y-m'});
     items.push({xtype: 'textfield', fieldLabel: 'KPI1', name: 'kpi1', allowBlank: false});
     items.push({xtype: 'textfield', fieldLabel: 'KPI2', name: 'kpi2', allowBlank: true});

@@ -1,5 +1,5 @@
 
-Ext.define('Uums.admin_user.DepartmentTreePanel', {
+Ext.define('Uums.DepartmentTreePanel', {
   extend: 'Ext.tree.TreePanel',
   
   constructor: function(config) {

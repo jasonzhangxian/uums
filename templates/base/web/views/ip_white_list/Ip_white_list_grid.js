@@ -54,7 +54,7 @@ Ext.define('Uums.ip_white_list.Ip_white_listGrid', {
   		}
   	});
     config.columns =[<!--此处需要改-->
-      { header: 'IP地址', dataIndex: 'ip_address', width: 100},
+      { header: 'IP地址', dataIndex: 'ip_address', width: 120},
       { header: '修改时间', dataIndex: 'update_time', width:140},
       { header: '修改人', dataIndex: 'update_user_id', flex:1},
       <!--{ header: '状态', dataIndex: 'is_closed', renderer: statics.renderStatus, width: 80, align: 'center'},-->

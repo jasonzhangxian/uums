@@ -6,7 +6,8 @@ require APPPATH . 'libraries/REST_Controller.php';
 class Admin_user extends REST_Controller {
 
 
-    function __construct() {
+    function __construct() 
+    {
         parent::__construct();
         $this->load->model('admin_user_model','admin_user');
     }
@@ -22,9 +23,10 @@ class Admin_user extends REST_Controller {
         $action = $this->get('action');
         if(!empty($action))
         {
-            $result = $this->{'admin_user_'.$action}();
-        }else
-            {
+            $response = $this->{'admin_user_'.$action}();
+        }
+        else
+        {
             $user_id = $this->get('user_id');
             $this->load->model('department_model','department');
             $this->load->model('grade_model','grade');
@@ -39,8 +41,9 @@ class Admin_user extends REST_Controller {
                     $grade_info = $this->grade->get_one(array('grade_id'=>$data['grade_id']));
                     $data['grade_name'] = $grade_info['grade_name'];
                 }
-    			$result = array('success' => TRUE, 'data' => $data);
-    		}else
+    			$response = array('success' => TRUE, 'data' => $data);
+    		}
+            else
     		{
     			$start = $this->get('start') ? $this->get('start') : 0;
     			$limit = $this->get('limit') ? $this->get('limit') : MAX_DISPLAY_SEARCH_RESULTS;
@@ -48,11 +51,13 @@ class Admin_user extends REST_Controller {
                 $department_id = $this->get('department_id');
     			$where = array();
     			$records = array();
-    			if(!empty($search)){
+    			if(!empty($search))
+                {
     				$where['like'] = array('username'=>$search,'realname'=>$search);
     			}
                 $department_id = intval($department_id);
-                if($department_id){
+                if($department_id)
+                {
                     $all_children = $this->department->get_all_children($department_id);
                     $all_children[] = $department_id;
                     $where['in department_id'] = $all_children;
@@ -83,10 +88,10 @@ class Admin_user extends REST_Controller {
     						);     
     				}
     			}
-    			$result = array(EXT_JSON_READER_TOTAL => $total, EXT_JSON_READER_ROOT => $records);
+    			$response = array(EXT_JSON_READER_TOTAL => $total, EXT_JSON_READER_ROOT => $records);
     		}
         }
-		$this->response($result, REST_Controller::HTTP_OK);
+		$this->response($response, REST_Controller::HTTP_OK);
     }
 
     /**
@@ -138,7 +143,9 @@ class Admin_user extends REST_Controller {
         {
         	$user_info = $this->admin_user->get_one(array('user_id'=>$user_id));
         	$username_rule = 'trim|required|min_length[4]'.($user_info['username'] != $username?'|is_unique[admin_user.username]':'');
-        }else{
+        }
+        else
+        {
         	$username_rule = 'trim|required|min_length[4]|is_unique[admin_user.username]';
         }
         $this->form_validation->set_rules('username', '用户账号', $username_rule, $username_error_message);
@@ -231,7 +238,11 @@ class Admin_user extends REST_Controller {
 
 		$this->response($response, REST_Controller::HTTP_OK);
     }
-
+    /**
+     * 获取用户列表（用于下列框）
+     * @access public
+     * @return string
+     */
     public function admin_user_list()
     {
         $data = array();

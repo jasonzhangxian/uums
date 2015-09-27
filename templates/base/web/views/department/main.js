@@ -4,7 +4,6 @@ Ext.namespace("Uums.department");
 {{ include('department/department_tree.js')}}
 {{ include('department/department_dialog.js')}}
 {{ include('department/department_main_panel.js')}}
-{{ include('common/department.js')}}
 
 Ext.override(Uums.desktop.DepartmentWindow, {
   createWindow : function() {

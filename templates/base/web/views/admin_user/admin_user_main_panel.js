@@ -8,7 +8,7 @@ Ext.define('Uums.admin_user.mainPanel', {
     config.border = false;
     config.layout = 'border';
     
-    this.treeDepartment = Ext.create('Uums.admin_user.DepartmentTreePanel');
+    this.treeDepartment = Ext.create('Uums.DepartmentTreePanel');
     this.treeDepartment.on('selectchange', this.onDepartmentSelectChange, this);
 
     this.grdAdminUser = Ext.create('Uums.admin_user.AdminUserGrid');

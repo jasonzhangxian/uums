@@ -38,7 +38,8 @@ class User_kpi extends REST_Controller {
           $data['realname'] = $user_info['realname'];
         }
         $result = array('success' => TRUE, 'data' => $data);
-      }else
+      }
+      else
       {
         $start = $this->get('start') ? $this->get('start') : 0;
         $limit = $this->get('limit') ? $this->get('limit') : MAX_DISPLAY_SEARCH_RESULTS;
@@ -46,11 +47,13 @@ class User_kpi extends REST_Controller {
         $department_id = $this->get('department_id');
         $where = array();
         $records = array();
-        if(!empty($search)){
+        if(!empty($search))
+        {
           $where['like'] = array('admin_user.username'=>$search,'admin_user.realname'=>$search);
         }
         $department_id = intval($department_id);
-        if($department_id){
+        if($department_id)
+        {
           $all_children = $this->department->get_all_children($department_id);
           $all_children[] = $department_id;
           $where['in admin_user.department_id'] = $all_children;
@@ -95,8 +98,14 @@ class User_kpi extends REST_Controller {
     if(!empty($action))
     {
       $result = $this->{'user_kpi_'.$action}();
-    }else{
+    }
+    else
+    {
+      $this->load->library('form_validation');
       $user_id = $this->post('user_id');
+      $department_name = $this->post('department_name');
+      $grade_name = $this->post('grade_name');
+      $kpi1 = $this->post('kpi1');
       $kpi1 = $this->post('kpi1');
       $kpi2 = $this->post('kpi2');
       $salary = $this->post('salary');
@@ -104,6 +113,8 @@ class User_kpi extends REST_Controller {
       $month = $this->post('month');
 
       $data = array('user_id'=>$user_id,
+                    'department_name'=>$department_name,
+                    'grade_name'=>$grade_name,
                     'kpi1' => $kpi1,
                     'kpi2' => $kpi2,
                     'salary' => $salary,
@@ -112,7 +123,19 @@ class User_kpi extends REST_Controller {
       );
       $error = FALSE;
       $feedback = array();
-      //save customer data
+      if(!$user_id)
+      {
+        $error = TRUE;
+        $feedback[] = "请选择用户！";
+      }
+      $this->form_validation->set_rules('department_name', '所属部门', 'trim|required',array('required'  => '%s不能为空.'));
+      $this->form_validation->set_rules('grade_name', '职级', 'trim|required',array('required'  => '%s不能为空.'));
+      
+      if ($this->form_validation->run() == false) 
+      {
+          $error = TRUE;
+          $feedback[] = validation_errors();
+      }
       if ($error === FALSE)
       {
         $this->user_kpi->replace($data);
@@ -163,11 +186,13 @@ class User_kpi extends REST_Controller {
     $department_id = $this->get('department_id');
     $where = array();
     $records = array();
-    if(!empty($search)){
+    if(!empty($search))
+    {
       $where['like'] = array('admin_user.username'=>$search,'admin_user.realname'=>$search);
     }
     $department_id = intval($department_id);
-    if($department_id){
+    if($department_id)
+    {
       $all_children = $this->department->get_all_children($department_id);
       $all_children[] = $department_id;
       $where['in admin_user.department_id'] = $all_children;
@@ -211,7 +236,8 @@ class User_kpi extends REST_Controller {
       $where['like'] = array('admin_user.username'=>$search,'admin_user.realname'=>$search);
     }
     $department_id = intval($department_id);
-    if($department_id){
+    if($department_id)
+    {
       $all_children = $this->department->get_all_children($department_id);
       $all_children[] = $department_id;
       $where['in admin_user.department_id'] = $all_children;

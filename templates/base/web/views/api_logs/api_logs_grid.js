@@ -22,13 +22,12 @@ Ext.define('Uums.api_logs.Api_logsGrid', {
     config.viewConfig = {emptyText: UumsLanguage.gridNoRecords};
     
     config.store = Ext.create('Ext.data.Store', {
-      fields:[<!--此处需要改-->
+      fields:[
         'lid',
+        'system_code',
         'api',
-        'log_info',
         'log_time',
-        'ip_address',
-        'system_code'
+        'ip_address'
       ],
       pageSize: Uums.CONF.GRID_PAGE_SIZE,
       proxy: {
@@ -55,13 +54,12 @@ Ext.define('Uums.api_logs.Api_logsGrid', {
   			}
   		}
   	});
-    config.columns =[<!--此处需要改-->
+    config.columns =[
       { header: '日志编号', dataIndex: 'lid', width:60},
       { header: '接口名称', dataIndex: 'api', width:80},
-      { header: '操作内容', dataIndex: 'log_info', flex:1},
-      { header: '日志时间', dataIndex: 'log_time', width:120},
-      { header: 'IP地址', dataIndex: 'ip_address', width:80},
+      { header: 'IP地址', dataIndex: 'ip_address', width:120},
       { header: '系统代码', dataIndex: 'system_code', width:60},
+      { header: '日志时间', dataIndex: 'log_time', flex: 1},
       {
         xtype:'actioncolumn', 
         width:60,
@@ -196,7 +194,7 @@ Ext.define('Uums.api_logs.Api_logsGrid', {
       url: Uums.api_logs_request_url,
       method: 'PUT',
       params: {
-        lid: api_logsId,<!--api_logs_id-->
+        lid: api_logsId,
         flag: flag
       },
       callback: function(options, success, response) {
@@ -205,7 +203,7 @@ Ext.define('Uums.api_logs.Api_logsGrid', {
         if (result.success == true) {
           var store = this.getStore();
           
-          store.getAt(index).set('is_closed', flag);<!--此处需要改-->
+          store.getAt(index).set('is_closed', flag);
           
           this.fireEvent('notifysuccess', result.feedback);
         }

@@ -22,7 +22,8 @@ class Privilege extends REST_Controller {
 		if(!empty($action))
 		{
 			$result = $this->{'privilege_'.$action}();
-		}else
+		}
+		else
 		{
 			$privilege_id = $this->get('privilege_id');
 			if($privilege_id)
@@ -36,7 +37,8 @@ class Privilege extends REST_Controller {
 				$search = $this->get('search');
 				$where = array();
 				$records = array();
-				if(!empty($search)){
+				if(!empty($search))
+				{
 					$where['like'] = array('privilege_name'=>$search,'privilege_code'=>$search);
 				}
 				$privilege = $this->privilege->get_all($where,'*','privilege_id','desc', $limit,$start);
@@ -66,6 +68,7 @@ class Privilege extends REST_Controller {
      */
     public function privilege_post()
     {
+        $this->load->library('form_validation');
         $privilege_id = $this->input->post('privilege_id');
         $privilege_name = $this->input->post('privilege_name');
         $sys_code = $this->input->post('sys_code');
@@ -78,28 +81,40 @@ class Privilege extends REST_Controller {
         $error = FALSE;
         $feedback = array();
 
-        //customer firstname
-        if (empty($privilege_name))
-        {
-            $error = TRUE;
-            $feedback[] = '权限名称不能为空';
-        }
-		if(empty($sys_code))
-        {
-            $error = TRUE;
-            $feedback[] = '请选择所属系统';
-        }
 		if(empty($privilege_code))
         {
             $error = TRUE;
             $feedback[] = '权限编码不能为空';
         }
-		$tmp = $this->privilege->get_one(array('sys_code'=>$sys_code,'privilege_code' => $privilege_code));
-		if(!empty($tmp) && $tmp['privilege_id'] != $privilege_id)
+		$privilege_info = $this->privilege->get_one(array('sys_code'=>$sys_code,'privilege_code' => $privilege_code));
+		if(!empty($privilege_info) && $privilege_info['privilege_id'] != $privilege_id)
 		{
             $error = TRUE;
             $feedback[] = '该权限编码已经存在，请修改';
 		}
+
+        // $privilege_code_error_message = array('required'  => '%s不能为空.',
+        //                                 'min_length' => '%s长度必须大于1位',
+        //                                 'is_unique' => '您输入的%s系统中已存在.'
+        //                           );
+        // if(is_numeric($privilege_id))
+        // {
+        //     $privilege_info = $this->quarters->get_one(array('privilege_id'=>$privilege_id));
+        //     $privilege_code_rule = 'trim|required|min_length[2]'.($privilege_info['privilege_code'] != $privilege_code?'|is_unique[privilege.privilege_code]':'');
+        // }
+        // else
+        // {
+        //     $privilege_code_rule = 'trim|required|min_length[2]|is_unique[privilege.privilege_code]';
+        // }
+        // $this->form_validation->set_rules('privilege_code','权限编码',$privilege_code_rule,$privilege_code_error_message);
+		$this->form_validation->set_rules('privilege_name', '权限名称', 'trim|required',array('required'  => '%s不能为空.'));
+		$this->form_validation->set_rules('sys_code', '所属系统', 'trim|required',array('required'  => '%s不能为空.'));
+
+        if ($this->form_validation->run() == false) 
+        {
+            $error = TRUE;
+            $feedback[] = validation_errors();
+        }
 
         $data = array('privilege_name' => $privilege_name,
 						'sys_code' => $sys_code,
@@ -114,7 +129,8 @@ class Privilege extends REST_Controller {
 		{
 			$tmp = $this->privilege->get_one(array('privilege_id'=>$parent_id));
 			$data['level'] = $tmp['level'] + 1;
-		}else
+		}
+		else
 		{
 			$data['level'] = 0;
 		}
@@ -194,12 +210,26 @@ class Privilege extends REST_Controller {
 		$this->response($response, REST_Controller::HTTP_OK);
     }
 
+    /**
+     * 获取权限树形结构
+     *
+     * @access public
+     * @param $privilege_id
+     * @return string
+     */
 	private function privilege_tree()
 	{
 		$node = $this->get('node');
 		$result = $this->privilege->get_tree($node);
 		return $result;
 	}
+    /**
+     * 获取权限列表
+     *
+     * @access public
+     * @param $privilege_id
+     * @return string
+     */
 	private function privilege_list()
 	{
 		$start = $this->get('start') ? $this->get('start') : 0;
@@ -210,7 +240,8 @@ class Privilege extends REST_Controller {
 		if(is_numeric($privilege_id))
 		{
 			$where = array('parent_id'=>$privilege_id);
-		}else
+		}
+		else
 		{
 			$where = !empty($privilege_id)?array('sys_code'=>$privilege_id):array();
 		}
@@ -219,14 +250,17 @@ class Privilege extends REST_Controller {
 		$records = $this->privilege->get_all($where,'*','privilege_id','desc', $limit,$start);
 		if(!empty($records))
 		{
-			$admin_user_list = $this->cache->get('admin_user_list');
-			$new7_system_list = $this->cache->get('new7_system_list');
-			$privilege_list = $this->cache->get('privilege_list');
+			$this->load->model('admin_user_model','admin_user');
+			$this->load->model('new7_system_model','new7_system');
 			foreach($records as &$value)
 			{
-				$value['update_user_name'] = $admin_user_list[$value['update_user_id']]['realname'];
-				$value['system_name'] = $new7_system_list[$value['sys_code']]['system_name'];
-				$value['parent_name'] = $value['parent_id']==0?'':$privilege_list[$value['parent_id']]['privilege_name'];
+				$admin_info = $this->admin_user->get_one(array('user_id'=>$value['update_user_id']),'realname');
+				$sys_info = $this->new7_system->get_one(array('sys_code'=>$value['sys_code']),'system_name');
+				$privilege_info = $this->privilege->get_one(array('sys_code'=>$value['sys_code'],'privilege_id' => $value['parent_id']),'privilege_name');
+		
+				$value['update_user_name'] = $admin_info['realname'];
+				$value['system_name'] = $sys_info['system_name'];
+				$value['parent_name'] = empty($privilege_info)?'':$privilege_info['privilege_name'];
 				$value['update_time'] = date("Y-m-d H:i",$value['update_time']);
 				$value['margin'] = $value['level']*10;
 			}
@@ -235,6 +269,13 @@ class Privilege extends REST_Controller {
 		$result = array(EXT_JSON_READER_TOTAL => $total, EXT_JSON_READER_ROOT => $records);
 		return $result;
 	}
+    /**
+     * 获取权限树形结构（下拉框）
+     *
+     * @access public
+     * @param $privilege_id
+     * @return string
+     */
 	private function privilege_folder()
 	{
 		$privilege_id = $this->get('privilege_id');
@@ -243,7 +284,8 @@ class Privilege extends REST_Controller {
 		if(is_numeric($privilege_id))
 		{
 			$where = array('parent_id'=>$privilege_id);
-		}else
+		}
+		else
 		{
 			$where = !empty($privilege_id)?array('sys_code'=>$privilege_id):array();
 		}
@@ -279,6 +321,13 @@ class Privilege extends REST_Controller {
 		$result = array(EXT_JSON_READER_ROOT => array_values($result));
 		return $result;
 	}
+    /**
+     * 移动权限
+     *
+     * @access public
+     * @param $privilege_id
+     * @return string
+     */
 	private function privilege_move()
 	{
 		$privilege_ids = $this->get('privilege_ids');
